@@ -1,100 +1,44 @@
-import { useRef, useState } from "react";
-import { useClickAway, useMouse, useKeyPress } from "ahooks";
-import TimeScalePaint from "./TimeScale";
-import "./App.css";
-
+import { useState } from "react";
+import styles from "./App.module.less";
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "./db";
+import { Button, Input } from "@douyinfe/semi-ui";
+import "react-calendar-heatmap/dist/styles.css";
+import HabitItem from "./components/HabitItem";
 function TimeScale() {
-  const [left, setLeft] = useState<number>(0);
-  const [tipLeft, setTipLeft] = useState<number>(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const paint = useRef<TimeScalePaint | null>(null);
-  const hasDown = useRef<boolean>(false);
-  const mouse = useMouse(ref.current);
-  const [timeTipShow, setTimeTipShowe] = useState<boolean>(false);
-  useClickAway(() => {
-    hasDown.current = true;
-  }, ref);
+  const [name, setName] = useState("");
+  const habits = useLiveQuery(() => db.habits?.toArray());
 
-  useKeyPress("leftarrow", () => {
-    if (left > 0) {
-      setLeft(left - 1);
+  async function addHabit() {
+    try {
+      // Add the new friend!
+      await db.habits.add({
+        name,
+      });
+      setName("");
+    } catch (error) {
+      console.error(error);
     }
-  });
-  useKeyPress("rightarrow", () => {
-    if (left < mouse.elementW) {
-      setLeft(left + 1);
-    }
-  });
-
-  const onMounseDown: React.MouseEventHandler<HTMLDivElement> | undefined = (
-    e
-  ) => {
-    hasDown.current = true;
-  };
-  const onMouseMove: React.MouseEventHandler<HTMLDivElement> | undefined = (
-    e
-  ) => {
-    if (mouse.elementX >= 0 && mouse.elementX <= mouse.elementW) {
-      setTipLeft(mouse.elementX);
-      setTimeTipShowe(true);
-    } else {
-      setTimeTipShowe(false);
-    }
-    if (
-      hasDown.current &&
-      mouse.elementX >= 0 &&
-      mouse.elementX <= mouse.elementW
-    ) {
-      setLeft(mouse.elementX);
-    } else {
-      hasDown.current = false;
-    }
-  };
-
-  const onMouseUp: React.MouseEventHandler<HTMLDivElement> | undefined = (
-    e
-  ) => {
-    hasDown.current = false;
-  };
+  }
 
   return (
-    <div className="App">
-      <div
-        ref={ref}
-        className="progress"
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-      >
-        <canvas
-          ref={(canvas) => {
-            if (canvas && !paint.current) {
-              const time = new TimeScalePaint(644, 3000, canvas);
-              time.draw();
-              paint.current = time;
-            }
-          }}
-          id="time-scale"
-          onClick={(e) => {
-            setLeft(mouse?.elementX);
-          }}
-        ></canvas>
-        <div
-          className="progress-preview"
-          style={{
-            left: tipLeft,
-            // display: timeTipShow ? "inline-block" : "none",
-          }}
-        >
-          11:22
-        </div>
-        <div id="pin" style={{ left }}>
-          <div
-            id="tr"
-            onMouseDown={onMounseDown}
-            onMouseMove={onMouseMove}
-          ></div>
-          <div id="line"></div>
-        </div>
+    <div className={`${styles.home} `}>
+      <div className="flex sticky top-0 py-4 bg-white z-30">
+        <Input
+          className="mr-2"
+          type="text"
+          value={name}
+          onEnterPress={addHabit}
+          onChange={(e) => setName(e)}
+        />
+        <Button onClick={addHabit} theme="solid" type="primary">
+          Add
+        </Button>
+      </div>
+      <div>
+        {habits?.map((habit) => (
+          <HabitItem key={habit.id} data={habit} />
+        ))}
       </div>
     </div>
   );

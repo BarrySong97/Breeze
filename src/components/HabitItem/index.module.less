@@ -1,11 +1,17 @@
 .habit {
   .dateItem {
+    user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: rgb(234, 235, 240);
     width: 28px;
     height: 28px;
+  }
+
+  .checkedItem {
+    background-color: var(--semi-color-primary);
+    color: white;
   }
   .today::after {
     height: 2px;

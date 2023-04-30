@@ -24,7 +24,6 @@ import YearlyModal from "../YearlyModal";
 export interface HabitItemProps {
   data: Habit;
 }
-const { Text } = Typography;
 const HabitItem: FC<HabitItemProps> = ({ data }) => {
   const [weekDays, today] = useMemo(() => getCurrentWeekDays(), []);
   const [
@@ -52,6 +51,9 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
               onClick={setMonthModalShow}
             />
           }
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           type="tertiary"
           theme="borderless"
         ></Button>
@@ -64,13 +66,16 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
               <Dropdown.Item type="danger" onClick={onDelete}>
                 删除
               </Dropdown.Item>
-              <Dropdown.Item type="secondary">修改</Dropdown.Item>
+              {/* <Dropdown.Item type="secondary">修改</Dropdown.Item> */}
             </Dropdown.Menu>
           }
         >
           <Button
             icon={<IconMore />}
             type="tertiary"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             theme="borderless"
           ></Button>
         </Dropdown>

@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@douyinfe/semi-icons': ^2.34.0
   '@douyinfe/semi-ui': ^2.33.1
   '@types/react': ^18.0.26
   '@types/react-calendar-heatmap': ^1.6.3
@@ -23,6 +24,7 @@ specifiers:
   vite: ^4.0.0
 
 dependencies:
+  '@douyinfe/semi-icons': 2.34.0_react@18.2.0
   '@douyinfe/semi-ui': 2.33.1_biqbaboplfbrettd7655fr4n2y
   ahooks: 3.7.4_react@18.2.0
   classnames: 2.3.2
@@ -335,6 +337,15 @@ packages:
 
   /@douyinfe/semi-icons/2.33.1_react@18.2.0:
     resolution: {integrity: sha512-OfPHihSmUPqFbHOSp9EGquX1c8HC8m9PVqjILYPYzz5WjM1uAfKeMLOQnrCc8CCWVIAx7UGpwExdufpPcNkj2Q==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      classnames: 2.3.2
+      react: 18.2.0
+    dev: false
+
+  /@douyinfe/semi-icons/2.34.0_react@18.2.0:
+    resolution: {integrity: sha512-RHEgvmYwGqytXSfo1QeHQIAu3Av0PrEB4jFVbenjfjwwMzVS64A0yEOnqsLczBEO/mtzLxtaJpz8lhvHqjbLKw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:

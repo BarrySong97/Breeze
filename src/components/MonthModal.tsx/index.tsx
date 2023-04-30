@@ -1,23 +1,16 @@
 import Modal, { ModalReactProps } from "@douyinfe/semi-ui/lib/es/modal";
-import { FC, useMemo, useState } from "react";
+import { FC } from "react";
 import { LocaleConsumer } from "@douyinfe/semi-ui";
 import MonthsGrid from "@douyinfe/semi-ui/lib/es/datePicker/monthsGrid";
 import ConfigContext from "@douyinfe/semi-ui/lib/es/configProvider/context";
-import { getCurrentMonthDays } from "../../utils/date";
+import CalendarHeatmap from "react-calendar-heatmap";
+import { db } from "../../db";
 export interface MonthModalProps extends ModalReactProps {
   dates?: Date[];
+  id?: number;
 }
-const today = new Date();
-const MonthModal: FC<MonthModalProps> = ({ ...props }) => {
+const MonthModal: FC<MonthModalProps> = ({ id, ...props }) => {
   const { dates } = props;
-  const [pane, setPane] = useState<Date>(today);
-  const [value, onChange] = useState<Date>(new Date());
-
-  const currentMonth = useMemo(
-    () => getCurrentMonthDays(pane, dates),
-    [pane, dates]
-  );
-
   return (
     <Modal
       {...props}
@@ -46,13 +39,11 @@ const MonthModal: FC<MonthModalProps> = ({ ...props }) => {
                 dateFnsLocale={dateFnsLocale}
                 // defaultValue={currentMonth}
 
-                defaultValue={currentMonth}
+                defaultValue={dates}
                 multiple={true}
-                onPanelChange={(e) => {
-                  setPane(e as Date);
-                }}
                 onChange={(e) => {
-                  console.log(e);
+                  if (!id) return;
+                  db.habits.update(id, { dates: e });
                 }}
               />
             )}

@@ -1,12 +1,26 @@
-import { Card, Dropdown, Modal, Typography } from "@douyinfe/semi-ui";
+import {
+  Button,
+  Card,
+  Dropdown,
+  Modal,
+  Space,
+  Typography,
+} from "@douyinfe/semi-ui";
 import classNames from "classnames";
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { useBoolean } from "ahooks";
 import { db, Habit } from "../../db";
-import { areDatesOnSameDay, getCurrentWeekDays } from "../../utils/date";
+import {
+  areDatesOnSameDay,
+  cnWeekdaysMap,
+  getCurrentWeekDays,
+} from "../../utils/date";
 import MonthModal from "../MonthModal.tsx";
 import styles from "./index.module.less";
 import "react-calendar-heatmap/dist/styles.css";
+import { IconMore } from "@douyinfe/semi-icons";
+import { MaterialSymbolsCalendarMonth } from "../../assets/icons/HeatMapCalendar";
+import YearlyModal from "../YearlyModal";
 export interface HabitItemProps {
   data: Habit;
 }
@@ -17,6 +31,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     monthModalVisible,
     { setTrue: setMonthModalShow, setFalse: setMonthModalHide },
   ] = useBoolean(false);
+  const [overviewVisible, setOverviewVisible] = useState(false);
   const onDelete = async () => {
     Modal.error({
       title: "删除习惯",
@@ -29,29 +44,37 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
   };
   const renderDropDown = () => {
     return (
-      <Dropdown
-        position="bottomLeft"
-        trigger="click"
-        stopPropagation
-        render={
-          <Dropdown.Menu>
-            <Dropdown.Item type="danger" onClick={onDelete}>
-              删除
-            </Dropdown.Item>
-            <Dropdown.Item type="secondary">修改</Dropdown.Item>
-          </Dropdown.Menu>
-        }
-      >
-        <Text
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          link
-          className="cursor-pointer"
+      <Space>
+        <Button
+          icon={
+            <MaterialSymbolsCalendarMonth
+              fontSize={20}
+              onClick={setMonthModalShow}
+            />
+          }
+          type="tertiary"
+          theme="borderless"
+        ></Button>
+        <Dropdown
+          position="bottomLeft"
+          trigger="click"
+          stopPropagation
+          render={
+            <Dropdown.Menu>
+              <Dropdown.Item type="danger" onClick={onDelete}>
+                删除
+              </Dropdown.Item>
+              <Dropdown.Item type="secondary">修改</Dropdown.Item>
+            </Dropdown.Menu>
+          }
         >
-          更多
-        </Text>
-      </Dropdown>
+          <Button
+            icon={<IconMore />}
+            type="tertiary"
+            theme="borderless"
+          ></Button>
+        </Dropdown>
+      </Space>
     );
   };
 
@@ -68,9 +91,10 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     }
     await db.habits.update(data.id, { dates });
   };
+
   return (
     <>
-      <div onClick={setMonthModalShow}>
+      <div onClick={() => setOverviewVisible(true)}>
         <Card
           shadows="hover"
           className={`${styles.habit} `}
@@ -87,8 +111,15 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
             const checkedClassName = classNames({
               [styles.checkedItem]: checked,
             });
+
             return (
-              <div key={day.getDate()} className="relative">
+              <div
+                key={day.getDate()}
+                className="relative flex flex-col items-center "
+              >
+                <div className="mb-2 font-bold">
+                  {cnWeekdaysMap.get(day.getDay())}
+                </div>
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
@@ -112,9 +143,22 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
       <MonthModal
         title="月视图"
         dates={data.dates}
+        id={data.id}
         visible={monthModalVisible}
         onCancel={setMonthModalHide}
         onOk={setMonthModalHide}
+      />
+      <YearlyModal
+        title="总览"
+        visible={overviewVisible}
+        dates={data.dates}
+        footer={null}
+        onCancel={() => {
+          setOverviewVisible(false);
+        }}
+        onOk={() => {
+          setOverviewVisible(false);
+        }}
       />
     </>
   );

@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.color-scale {
+    fill: var(--semi-color-primary);
+}
+
+.react-calendar-heatmap-weekday-labels {
+    margin-right: 8px;
+}

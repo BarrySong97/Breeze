@@ -88,7 +88,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
               [styles.checkedItem]: checked,
             });
             return (
-              <div key={day.getDay()} className="relative">
+              <div key={day.getDate()} className="relative">
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
@@ -110,7 +110,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
         </Card>
       </div>
       <MonthModal
-        title="详情"
+        title="月视图"
         dates={data.dates}
         visible={monthModalVisible}
         onCancel={setMonthModalHide}

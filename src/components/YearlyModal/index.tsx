@@ -1,20 +1,22 @@
 import Modal, { ModalReactProps } from "@douyinfe/semi-ui/lib/es/modal";
-import CalendarHeatmap from "react-calendar-heatmap";
 import { FC } from "react";
 import { getMaxConsecutiveDays } from "../../utils/date";
-import { Descriptions } from "@douyinfe/semi-ui";
+import HeatMapCalendar from "../HeatMapCalendar";
+import { Area } from "@ant-design/plots";
 export interface YearlyModalProps extends ModalReactProps {
   dates?: Date[];
 }
+
 const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
+  const { visible } = props;
   const values = dates?.map((date) => {
     return {
       date: date.toISOString(),
-      count: 1,
+      value: 1,
     };
   });
   const consecutiveDays = getMaxConsecutiveDays(dates ?? []);
-  const data = [
+  const desData = [
     { key: "目前连续天数", value: consecutiveDays.countFromLast },
     { key: "最大连续天数", value: consecutiveDays.maxCount },
   ];
@@ -24,10 +26,24 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
     borderRadius: "4px",
     padding: "10px",
   };
+  const config = {
+    data: values,
+    xField: "date",
+    yField: "value",
+    xAxis: {
+      range: [0, 1],
+      tickCount: 5,
+    },
+    areaStyle: () => {
+      return {
+        fill: "l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff",
+      };
+    },
+  };
   return (
-    <Modal {...props} width={800}>
+    <Modal {...props} width={1150}>
       <div className="mb-6 flex">
-        {data.map((v) => {
+        {desData.map((v) => {
           return (
             <div style={style} className="flex-1 mr-2" key={v.key}>
               <div>{v.value}</div>
@@ -36,34 +52,10 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
           );
         })}
       </div>
-
-      <CalendarHeatmap
-        showWeekdayLabels
-        classForValue={(value) => {
-          if (!value) {
-            return "color-empty";
-          }
-          return `color-scale`;
-        }}
-        monthLabels={[
-          "一月",
-          "二月",
-          "三月",
-          "四月",
-          "五月",
-          "六月",
-          "七月",
-          "八月",
-          "九月",
-          "十月",
-          "十一月",
-          "十二月",
-        ]}
-        weekdayLabels={["周日", "周一", "周二", "周三", "周四", "周五", "周六"]}
-        startDate={new Date("2023-01-01")}
-        endDate={new Date("2023-12-31")}
-        values={values ?? []}
-      />
+      <div>
+        <Area {...config} />
+      </div>
+      <HeatMapCalendar data={values} />
     </Modal>
   );
 };

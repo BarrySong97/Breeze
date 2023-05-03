@@ -81,3 +81,63 @@ export function getMaxConsecutiveDays(dates: Date[]): MaxDays {
     countFromLast: dp[dp.length - 1],
   };
 }
+
+type YearMonthObject = {
+  year: number;
+  month: number;
+  dates: Date[];
+};
+
+export function classifyDatesByYearAndMonth(dates: Date[]): YearMonthObject[] {
+  const classifiedDates: YearMonthObject[] = [];
+
+  dates.forEach((date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // 月份从0开始，所以需要加1
+
+    // 查找是否已有相同年份和月份的对象
+    const existingObj = classifiedDates.find(
+      (obj) => obj.year === year && obj.month === month
+    );
+
+    // 如果存在相同年份和月份的对象，将日期添加到对象的dates数组中
+    if (existingObj) {
+      existingObj.dates.push(date);
+    } else {
+      // 如果没有找到相同年份和月份的对象，创建一个新对象并将其添加到结果数组中
+      classifiedDates.push({
+        year: year,
+        month: month,
+        dates: [date],
+      });
+    }
+  });
+  // 对已分类的年份进行排序
+  const sortedYears = Array.from(
+    new Set(classifiedDates.map((item) => item.year))
+  ).sort((a, b) => a - b);
+
+  // 确保每个年份的每个月份都有一个对象
+  sortedYears.forEach((year) => {
+    for (let month = 1; month <= 12; month++) {
+      const existingObj = classifiedDates.find(
+        (obj) => obj.year === year && obj.month === month
+      );
+
+      if (!existingObj) {
+        classifiedDates.push({
+          year: year,
+          month: month,
+          dates: [], // 如果没有日期，则使用空数组
+        });
+      }
+    }
+  });
+  // 对对象数组按年份和月份进行排序
+  return classifiedDates.sort((a, b) => {
+    if (a.year !== b.year) {
+      return a.year - b.year;
+    }
+    return a.month - b.month;
+  });
+}

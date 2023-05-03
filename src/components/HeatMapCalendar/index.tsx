@@ -37,7 +37,7 @@ const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data }) => {
       });
     }
   }, [data]);
-  return <div id="cal-heatmap" ref={calHeatmapRef}></div>;
+  return <div id="cal-heatmap" className="mb-6" ref={calHeatmapRef}></div>;
 };
 
 export default HeatMapCalendar;

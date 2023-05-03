@@ -7,6 +7,8 @@ import {
 import HeatMapCalendar from "../HeatMapCalendar";
 import { Area, AreaConfig } from "@ant-design/plots";
 import { Select } from "@douyinfe/semi-ui";
+import { IconChevronDown } from "@douyinfe/semi-icons";
+import { TriggerRenderProps } from "@douyinfe/semi-ui/lib/es/cascader";
 export interface YearlyModalProps extends ModalReactProps {
   dates?: Date[];
 }
@@ -15,12 +17,6 @@ const today = new Date();
 const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
   const { visible } = props;
   const [year, setYear] = useState(today.getFullYear());
-  const values = dates?.map((date) => {
-    return {
-      date: date.toISOString(),
-      value: 10,
-    };
-  });
   const consecutiveDays = getMaxConsecutiveDays(dates ?? []);
   const desData = [
     { key: "目前连续天数", value: consecutiveDays.countFromLast },
@@ -38,7 +34,7 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
   );
   const currentYearDates = calendarDates
     .filter((v) => v.year === year)
-    ?.map((v) => ({ month: v.month, count: v.dates.length }));
+    ?.map((v) => ({ count: v.dates.length, ...v }));
 
   const config: AreaConfig = {
     data: currentYearDates,
@@ -60,6 +56,7 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
         opacity: 0.6,
         fontSize: 12,
       },
+      position: "middle",
       // rotate: true,
     },
     areaStyle: () => {
@@ -70,20 +67,62 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
   };
   const getYearOptions = () => {
     // const year
+    const year = [...new Set(calendarDates.map((v) => v.year))];
+
+    return year.map((v) => ({
+      value: v,
+      label: v,
+    }));
   };
-  const list = [{ value: "abc", label: "抖音" }];
+  const list = getYearOptions();
+  const triggerRender2 = ({
+    value,
+  }: {
+    value: { label: string; value: string }[];
+  }) => {
+    return (
+      <div
+        style={{
+          minWidth: "112",
+          height: 32,
+          display: "flex",
+          alignItems: "center",
+          paddingLeft: 8,
+          borderRadius: 3,
+        }}
+      >
+        <div
+          style={{
+            margin: 4,
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            flexGrow: 1,
+            cursor: "pointer",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {value
+            .map((item: { value: string; label: string }) => item.label)
+            .join(" , ")}
+          <IconChevronDown style={{ margin: "0 8px", flexShrink: 0 }} />
+        </div>
+      </div>
+    );
+  };
   return (
     <Modal
       {...props}
-      // title={
-      //   <Select
-      //     value={year}
-      //     onChange={(value) => setYear(value as number)}
-      //     triggerRender={triggerRender2}
-      //     optionList={list}
-      //     style={{ width: 240, marginTop: 20, outline: 0 }}
-      //   ></Select>
-      // }
+      title={
+        <Select
+          value={year}
+          onChange={(value) => setYear(value as number)}
+          triggerRender={triggerRender2 as any}
+          optionList={list}
+          style={{ outline: 0 }}
+        ></Select>
+      }
       width={1150}
     >
       <div className="mb-6 flex">
@@ -96,8 +135,7 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
           );
         })}
       </div>
-
-      <HeatMapCalendar data={values} />
+      <HeatMapCalendar data={currentYearDates} />
       <div className="mb-6">{dates?.length ? <Area {...config} /> : null}</div>
     </Modal>
   );

@@ -82,7 +82,7 @@ export function getMaxConsecutiveDays(dates: Date[]): MaxDays {
   };
 }
 
-type YearMonthObject = {
+export type YearMonthObject = {
   year: number;
   month: number;
   dates: Date[];

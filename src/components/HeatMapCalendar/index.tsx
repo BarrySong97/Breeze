@@ -1,23 +1,31 @@
-import React, { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import CalHeatmap from "cal-heatmap";
 import "cal-heatmap/cal-heatmap.css";
+import { YearMonthObject } from "../../utils/date";
 export interface HeatMapCalendarProps {
-  data?: { date: string; value: number }[];
+  data?: YearMonthObject[];
 }
 const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data }) => {
   const calInstanceRef = useRef(new CalHeatmap());
   const calHeatmapRef = useRef<HTMLDivElement>(null);
-
+  const dates = data?.reduce((acc, cur) => {
+    acc.push(...cur.dates);
+    return acc;
+  }, [] as Date[]);
+  const year = dates?.[0]?.getFullYear();
   useEffect(() => {
     if (data) {
       calInstanceRef.current.paint({
         data: {
-          source: data,
+          source: dates?.map((v) => ({
+            date: v.toISOString(),
+            value: 10,
+          })),
           x: "date",
           y: "value",
         },
         date: {
-          start: new Date("2023-01-01"),
+          start: new Date(`${year}-01-01`),
           locale: "zh",
         },
         range: 12,

@@ -17,7 +17,6 @@ import {
 } from "../../utils/date";
 import MonthModal from "../MonthModal.tsx";
 import styles from "./index.module.less";
-import "react-calendar-heatmap/dist/styles.css";
 import { IconMore } from "@douyinfe/semi-icons";
 import { MaterialSymbolsCalendarMonth } from "../../assets/icons/HeatMapCalendar";
 import YearlyModal from "../YearlyModal";

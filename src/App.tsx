@@ -3,7 +3,6 @@ import styles from "./App.module.less";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "./db";
 import { Button, Input } from "@douyinfe/semi-ui";
-import "react-calendar-heatmap/dist/styles.css";
 import HabitItem from "./components/HabitItem";
 function TimeScale() {
   const [name, setName] = useState("");

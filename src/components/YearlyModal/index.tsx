@@ -8,7 +8,7 @@ import HeatMapCalendar from "../HeatMapCalendar";
 import { Area, AreaConfig } from "@ant-design/plots";
 import { Select } from "@douyinfe/semi-ui";
 import { IconChevronDown } from "@douyinfe/semi-icons";
-import { TriggerRenderProps } from "@douyinfe/semi-ui/lib/es/cascader";
+import { max, min } from "moment";
 export interface YearlyModalProps extends ModalReactProps {
   dates?: Date[];
 }
@@ -37,15 +37,15 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
     ?.map((v) => ({ count: v.dates.length, ...v }));
 
   const config: AreaConfig = {
-    data: currentYearDates,
+    data: currentYearDates.map((v) => ({
+      month: v.month + "月",
+      count: v.count,
+    })),
     xField: "month",
     yField: "count",
     smooth: true,
-    // line: null,
     xAxis: {
       range: [0, 1],
-      tickCount: 12,
-      // tickLine: null,
     },
     yAxis: {
       grid: null,

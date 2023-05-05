@@ -34,8 +34,8 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
   const [overviewVisible, setOverviewVisible] = useState(false);
   const onDelete = async () => {
     Modal.error({
-      title: "删除习惯",
-      content: "是否删除该习惯， 一旦删除数据将无法恢复",
+      title: t("deleteModal.title"),
+      content: t("deleteModal.description"),
       onOk: async () => {
         if (!data.id) return;
         await db.habits.delete(data.id);

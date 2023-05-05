@@ -21,3 +21,7 @@ export class MySubClassedDexie extends Dexie {
 }
 
 export const db = new MySubClassedDexie();
+
+db.on("populate", function () {
+  db.habits.bulkAdd([{ name: "Work out" }, { name: "Reading" }]);
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./App.module.less";
 import { useLiveQuery } from "dexie-react-hooks";
 import "./i18n/config";
@@ -22,7 +22,10 @@ const { Title } = Typography;
 function TimeScale() {
   const [name, setName] = useState("");
   const { t, i18n } = useTranslation();
-  const habits = useLiveQuery(() => db.habits?.toArray());
+  const habits = useLiveQuery(async () => {
+    const res = await db.habits?.toArray();
+    return res;
+  });
 
   const currentLanguage = i18n.language;
   async function addHabit() {
@@ -44,6 +47,8 @@ function TimeScale() {
     zh: zh_CN,
     en: en_US,
   } as const;
+
+  useEffect(() => {}, [habits?.length]);
   return (
     <Layout className="h-screen">
       <Header style={{ backgroundColor: "var(--semi-color-bg-2)" }}>

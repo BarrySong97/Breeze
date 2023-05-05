@@ -16,7 +16,6 @@ const MonthModal: FC<MonthModalProps> = ({ id, ...props }) => {
       {...props}
       width={300}
       footer={null}
-      // className={styles.habit}
       bodyStyle={{
         display: "flex",
         alignItems: "center",

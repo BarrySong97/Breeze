@@ -1,0 +1,24 @@
+{
+  "home": {
+    "action": {
+      "add": "添加"
+    }
+  },
+  "monthModal": {
+    "title": "月视图"
+  },
+  "habitItem": {
+    "delete": "刪除",
+    "edit": "修改"
+  },
+  "editModal": {
+    "title": "修改习惯"
+  },
+  "yearModal": {
+    "title": "年视图",
+    "desDate": {
+      "currentConsecutiveDays": "目前连续天数",
+      "maximumConsecutiveDays": "最大连续天数"
+    }
+  }
+}

@@ -35,6 +35,16 @@ export function getCurrentMonthDays(today?: Date, dates?: Date[]) {
   result?.sort((a, b) => a.getDate() - b.getDate());
   return result;
 }
+export const getWeekDaysMap = (lang: string) => {
+  switch (lang) {
+    case "zh":
+      return cnWeekdaysMap;
+    case "en":
+      return enWeekdaysMap;
+    default:
+      return cnWeekdaysMap;
+  }
+};
 export const cnWeekdaysMap = new Map<number, string>([
   [0, "日"],
   [1, "一"],
@@ -43,6 +53,15 @@ export const cnWeekdaysMap = new Map<number, string>([
   [4, "四"],
   [5, "五"],
   [6, "六"],
+]);
+export const enWeekdaysMap = new Map<number, string>([
+  [0, "Sun"],
+  [1, "Mon"],
+  [2, "Tue"],
+  [3, "Wed"],
+  [4, "Thu"],
+  [5, "Fri"],
+  [6, "Sat"],
 ]);
 type MaxDays = {
   maxCount: number;

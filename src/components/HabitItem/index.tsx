@@ -1,33 +1,35 @@
-import {
-  Button,
-  Card,
-  Dropdown,
-  Modal,
-  Space,
-  Typography,
-} from "@douyinfe/semi-ui";
+import { Button, Card, Dropdown, Modal, Space } from "@douyinfe/semi-ui";
 import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 import { FC, useMemo, useState } from "react";
 import { useBoolean } from "ahooks";
 import { db, Habit } from "../../db";
 import {
   areDatesOnSameDay,
-  cnWeekdaysMap,
   getCurrentWeekDays,
+  getWeekDaysMap,
 } from "../../utils/date";
 import MonthModal from "../MonthModal.tsx";
 import styles from "./index.module.less";
 import { IconMore } from "@douyinfe/semi-icons";
 import { MaterialSymbolsCalendarMonth } from "../../assets/icons/HeatMapCalendar";
 import YearlyModal from "../YearlyModal";
+import EditModal from "../EditModal";
 export interface HabitItemProps {
   data: Habit;
 }
 const HabitItem: FC<HabitItemProps> = ({ data }) => {
   const [weekDays, today] = useMemo(() => getCurrentWeekDays(), []);
+  const { t, i18n } = useTranslation();
+  const currentLanguage = i18n.language;
+
   const [
     monthModalVisible,
     { setTrue: setMonthModalShow, setFalse: setMonthModalHide },
+  ] = useBoolean(false);
+  const [
+    editModalVisible,
+    { setTrue: setEditModalShow, setFalse: setEditModalHide },
   ] = useBoolean(false);
   const [overviewVisible, setOverviewVisible] = useState(false);
   const onDelete = async () => {
@@ -44,14 +46,10 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     return (
       <Space>
         <Button
-          icon={
-            <MaterialSymbolsCalendarMonth
-              fontSize={20}
-              onClick={setMonthModalShow}
-            />
-          }
+          icon={<MaterialSymbolsCalendarMonth fontSize={20} />}
           onClick={(e) => {
             e.stopPropagation();
+            setMonthModalShow();
           }}
           type="tertiary"
           theme="borderless"
@@ -59,13 +57,20 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
         <Dropdown
           position="bottomLeft"
           trigger="click"
+          clickToHide
           stopPropagation
           render={
             <Dropdown.Menu>
-              <Dropdown.Item type="danger" onClick={onDelete}>
-                删除
+              <Dropdown.Item
+                onClick={(e) => {
+                  setEditModalShow();
+                }}
+              >
+                {t("habitItem.edit")}
               </Dropdown.Item>
-              {/* <Dropdown.Item type="secondary">修改</Dropdown.Item> */}
+              <Dropdown.Item type="danger" onClick={onDelete}>
+                {t("habitItem.delete")}
+              </Dropdown.Item>
             </Dropdown.Menu>
           }
         >
@@ -100,7 +105,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     <>
       <div onClick={() => setOverviewVisible(true)}>
         <Card
-          shadows="hover"
+          // shadows="hover"
           className={`${styles.habit} `}
           title={data.name}
           headerExtraContent={renderDropDown()}
@@ -122,7 +127,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
                 className="relative flex flex-col items-center "
               >
                 <div className="mb-2 font-bold">
-                  {cnWeekdaysMap.get(day.getDay())}
+                  {getWeekDaysMap(currentLanguage).get(day.getDay())}
                 </div>
                 <div
                   onClick={(e) => {
@@ -144,8 +149,15 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
           })}
         </Card>
       </div>
+      <EditModal
+        title={t("editModal.title")}
+        visible={editModalVisible}
+        habit={data}
+        onCancel={setEditModalHide}
+        onOk={setEditModalHide}
+      />
       <MonthModal
-        title="月视图"
+        title={t("monthModal.title")}
         dates={data.dates}
         id={data.id}
         visible={monthModalVisible}
@@ -153,7 +165,6 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
         onOk={setMonthModalHide}
       />
       <YearlyModal
-        title="总览"
         visible={overviewVisible}
         dates={data.dates}
         footer={null}

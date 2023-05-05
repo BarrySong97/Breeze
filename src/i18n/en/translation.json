@@ -1,0 +1,24 @@
+{
+  "home": {
+    "action": {
+      "add": "Add Habit"
+    }
+  },
+  "monthModal": {
+    "title": "Month View"
+  },
+  "editModal": {
+    "title": "Edit Habit"
+  },
+  "habitItem": {
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "yearModal": {
+    "title": "Year View",
+    "desDate": {
+      "currentConsecutiveDays": "Current Consecutive Days",
+      "maximumConsecutiveDays": "Maximum Consecutive Days"
+    }
+  }
+}

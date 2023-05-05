@@ -8,19 +8,26 @@ import HeatMapCalendar from "../HeatMapCalendar";
 import { Area, AreaConfig } from "@ant-design/plots";
 import { Select } from "@douyinfe/semi-ui";
 import { IconChevronDown } from "@douyinfe/semi-icons";
-import { max, min } from "moment";
+import { useTranslation } from "react-i18next";
 export interface YearlyModalProps extends ModalReactProps {
   dates?: Date[];
 }
 
 const today = new Date();
 const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
-  const { visible } = props;
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
   const [year, setYear] = useState(today.getFullYear());
   const consecutiveDays = getMaxConsecutiveDays(dates ?? []);
   const desData = [
-    { key: "目前连续天数", value: consecutiveDays.countFromLast },
-    { key: "最大连续天数", value: consecutiveDays.maxCount },
+    {
+      key: t("yearModal.desDate.currentConsecutiveDays"),
+      value: consecutiveDays.countFromLast,
+    },
+    {
+      key: t("yearModal.desDate.maximumConsecutiveDays"),
+      value: consecutiveDays.maxCount,
+    },
   ];
   const style = {
     boxShadow: "var(--semi-shadow-elevated)",
@@ -38,7 +45,7 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
 
   const config: AreaConfig = {
     data: currentYearDates.map((v) => ({
-      month: v.month + "月",
+      month: v.month,
       count: v.count,
     })),
     xField: "month",
@@ -135,7 +142,7 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
           );
         })}
       </div>
-      <HeatMapCalendar data={currentYearDates} />
+      <HeatMapCalendar lang={currentLang} data={currentYearDates} />
       <div className="mb-6">{dates?.length ? <Area {...config} /> : null}</div>
     </Modal>
   );

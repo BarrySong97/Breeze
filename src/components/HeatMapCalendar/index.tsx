@@ -1,11 +1,12 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, memo, useEffect, useRef } from "react";
 import CalHeatmap from "cal-heatmap";
 import "cal-heatmap/cal-heatmap.css";
 import { YearMonthObject } from "../../utils/date";
 export interface HeatMapCalendarProps {
   data?: YearMonthObject[];
+  lang?: string;
 }
-const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data }) => {
+const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data, lang }) => {
   const calInstanceRef = useRef(new CalHeatmap());
   const calHeatmapRef = useRef<HTMLDivElement>(null);
   const dates = data?.reduce((acc, cur) => {
@@ -26,7 +27,7 @@ const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data }) => {
         },
         date: {
           start: new Date(`${year}-01-01`),
-          locale: "zh",
+          locale: lang,
         },
         range: 12,
         scale: {
@@ -48,4 +49,4 @@ const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data }) => {
   return <div id="cal-heatmap" className="mb-6" ref={calHeatmapRef}></div>;
 };
 
-export default HeatMapCalendar;
+export default memo(HeatMapCalendar);

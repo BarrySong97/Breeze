@@ -83,7 +83,10 @@ function TimeScale() {
           locale={semiLocale[currentLanguage as keyof typeof semiLocale]}
         >
           <div className={`${styles.home} `}>
-            <div className="flex sticky top-0 py-4 bg-white z-30">
+            <div
+              style={{ backgroundColor: "#fbfbfb" }}
+              className="flex sticky top-0 py-4  z-30"
+            >
               <Input
                 className="mr-2"
                 type="text"
@@ -95,7 +98,7 @@ function TimeScale() {
                 {t("home.action.add")}
               </Button>
             </div>
-            <div>
+            <div style={{ backgroundColor: "#fbfbfb" }}>
               {habits?.map((habit) => (
                 <HabitItem key={habit.id} data={habit} />
               ))}

@@ -105,7 +105,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     <>
       <div onClick={() => setOverviewVisible(true)}>
         <Card
-          // shadows="hover"
+          shadows="hover"
           className={`${styles.habit} `}
           title={data.name}
           headerExtraContent={renderDropDown()}

@@ -3,7 +3,7 @@ import Dexie, { Table } from "dexie";
 export interface Habit {
   id?: number;
   name: string;
-  rank?: number;
+  order: number;
   dates?: Date[];
 }
 
@@ -15,7 +15,7 @@ export class MySubClassedDexie extends Dexie {
   constructor() {
     super("Butter");
     this.version(1).stores({
-      habits: "++id, name", // Primary key and indexed props
+      habits: "++id, name, order", // Primary key and indexed props
     });
   }
 }
@@ -23,5 +23,8 @@ export class MySubClassedDexie extends Dexie {
 export const db = new MySubClassedDexie();
 
 db.on("populate", function () {
-  db.habits.bulkAdd([{ name: "Work out" }, { name: "Reading" }]);
+  db.habits.bulkAdd([
+    { name: "Work out", order: 1 },
+    { name: "Reading", order: 2 },
+  ]);
 });

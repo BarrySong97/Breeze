@@ -39,7 +39,7 @@ function TimeScale() {
       if (!name) return;
       await db.habits.add({
         name,
-        order: 0,
+        order: habits?.length ?? 0,
       });
       setName("");
     } catch (error) {

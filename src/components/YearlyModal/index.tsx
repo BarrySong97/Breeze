@@ -45,7 +45,7 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
 
   const config: AreaConfig = {
     data: currentYearDates.map((v) => ({
-      month: v.month,
+      month: v.month + "",
       count: v.count,
     })),
     xField: "month",

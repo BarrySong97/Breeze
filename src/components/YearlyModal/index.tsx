@@ -9,6 +9,7 @@ import { Area, AreaConfig } from "@ant-design/plots";
 import { Select } from "@douyinfe/semi-ui";
 import { IconChevronDown } from "@douyinfe/semi-icons";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
 export interface YearlyModalProps extends ModalReactProps {
   dates?: Date[];
 }
@@ -19,7 +20,13 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
   const currentLang = i18n.language;
   const [year, setYear] = useState(today.getFullYear());
   const consecutiveDays = getMaxConsecutiveDays(dates ?? []);
+  console.log(dates?.[0]);
+
   const desData = [
+    {
+      key: t("yearModal.desDate.startedDate"),
+      value: moment(dates?.[0]).format("YYYY-MM-DD") ?? 0,
+    },
     {
       key: t("yearModal.desDate.currentConsecutiveDays"),
       value: consecutiveDays.countFromLast,
@@ -27,6 +34,10 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
     {
       key: t("yearModal.desDate.maximumConsecutiveDays"),
       value: consecutiveDays.maxCount,
+    },
+    {
+      key: t("yearModal.desDate.checkedDays"),
+      value: dates?.length ?? 0,
     },
   ];
   const style = {
@@ -136,7 +147,7 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
         {desData.map((v) => {
           return (
             <div style={style} className="flex-1 mr-2" key={v.key}>
-              <div>{v.value}</div>
+              <div className="text-lg font-semibold">{v.value}</div>
               <div>{v.key}</div>
             </div>
           );

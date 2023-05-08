@@ -22,7 +22,9 @@
     "title": "年视图",
     "desDate": {
       "currentConsecutiveDays": "目前连续天数",
-      "maximumConsecutiveDays": "最大连续天数"
+      "maximumConsecutiveDays": "最大连续天数",
+      "checkedDays": "已打卡天数",
+      "startedDate": "开始日期"
     }
   }
 }

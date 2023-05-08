@@ -22,7 +22,9 @@
     "title": "Year View",
     "desDate": {
       "currentConsecutiveDays": "Current Consecutive Days",
-      "maximumConsecutiveDays": "Maximum Consecutive Days"
+      "maximumConsecutiveDays": "Maximum Consecutive Days",
+      "checkedDays": "Checked Days",
+      "startedDate": "Stared Date"
     }
   }
 }

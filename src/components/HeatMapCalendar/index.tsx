@@ -2,6 +2,7 @@ import { FC, memo, useEffect, useRef } from "react";
 import CalHeatmap from "cal-heatmap";
 import "cal-heatmap/cal-heatmap.css";
 import { YearMonthObject } from "../../utils/date";
+import moment from "moment";
 export interface HeatMapCalendarProps {
   data?: YearMonthObject[];
   lang?: string;
@@ -19,7 +20,7 @@ const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data, lang }) => {
       calInstanceRef.current.paint({
         data: {
           source: dates?.map((v) => ({
-            date: v.toISOString(),
+            date: moment(v).format("YYYY-MM-DD") ?? "",
             value: 10,
           })),
           x: "date",
@@ -32,7 +33,6 @@ const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data, lang }) => {
         range: 12,
         scale: {
           color: {
-            // Try some values: Purples, Blues, Turbo, Magma, etc ...
             scheme: "Cool",
             type: "linear",
             domain: [0, 30],
@@ -40,7 +40,6 @@ const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data, lang }) => {
         },
         domain: {
           type: "month",
-          // gutter: 10,
         },
         subDomain: { type: "day", label: "DD", width: 15, height: 15 },
       });

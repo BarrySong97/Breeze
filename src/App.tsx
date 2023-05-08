@@ -20,11 +20,15 @@ import HabitItem from "./components/HabitItem";
 import { IconGithubLogo, IconLanguage } from "@douyinfe/semi-icons";
 import type { DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./droppable";
+import { useLocalStorageState } from "ahooks";
 const { Header, Content } = Layout;
 const { Title } = Typography;
 function TimeScale() {
   const [name, setName] = useState("");
   const { t, i18n } = useTranslation();
+  const [localeStorage, setLoaleStorage] = useLocalStorageState("locale", {
+    defaultValue: "en",
+  });
   const habits = useLiveQuery(async () => {
     return db.habits?.orderBy("order").toArray();
   });
@@ -32,7 +36,6 @@ function TimeScale() {
   useEffect(() => {
     setSortedHabits(habits);
   }, [habits]);
-  const currentLanguage = i18n.language;
   async function addHabit() {
     try {
       // Add the new friend!
@@ -48,7 +51,13 @@ function TimeScale() {
   }
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    setLoaleStorage(lng);
   };
+  useEffect(() => {
+    if (localeStorage) {
+      changeLanguage(localeStorage);
+    }
+  }, [localeStorage]);
   const semiLocale = {
     zh: zh_CN,
     en: en_US,
@@ -106,7 +115,7 @@ function TimeScale() {
                 type="tertiary"
                 onClick={() => {
                   window.open(
-                    "https://github.com/BarrySong97?tab=repositories",
+                    "https://github.com/BarrySong97/Breeze",
                     "_blank"
                   );
                 }}
@@ -116,6 +125,7 @@ function TimeScale() {
               <Select
                 defaultValue="en"
                 onChange={(value) => changeLanguage(value as string)}
+                value={localeStorage}
                 style={{ width: 200, marginRight: 10 }}
                 insetLabel={<IconLanguage />}
               >
@@ -128,7 +138,7 @@ function TimeScale() {
       </Header>
       <Content style={{ backgroundColor: "#fbfbfb" }} className="overflow-auto">
         <LocaleProvider
-          locale={semiLocale[currentLanguage as keyof typeof semiLocale]}
+          locale={semiLocale[localeStorage as keyof typeof semiLocale]}
         >
           <div className={`${styles.home} `}>
             <div

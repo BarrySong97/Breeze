@@ -166,7 +166,8 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
       />
       <YearlyModal
         visible={overviewVisible}
-        dates={data.dates}
+        name={data?.name}
+        dates={data?.dates}
         footer={null}
         onCancel={() => {
           setOverviewVisible(false);

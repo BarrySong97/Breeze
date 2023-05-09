@@ -12,10 +12,11 @@ import { useTranslation } from "react-i18next";
 import moment from "moment";
 export interface YearlyModalProps extends ModalReactProps {
   dates?: Date[];
+  name?: string;
 }
 
 const today = new Date();
-const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
+const YearlyModal: FC<YearlyModalProps> = ({ name, dates, ...props }) => {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
   const [year, setYear] = useState(today.getFullYear());
@@ -133,13 +134,16 @@ const YearlyModal: FC<YearlyModalProps> = ({ dates, ...props }) => {
     <Modal
       {...props}
       title={
-        <Select
-          value={year}
-          onChange={(value) => setYear(value as number)}
-          triggerRender={triggerRender2 as any}
-          optionList={list}
-          style={{ outline: 0 }}
-        ></Select>
+        <div className="flex items-center">
+          {name}
+          <Select
+            value={year}
+            onChange={(value) => setYear(value as number)}
+            triggerRender={triggerRender2 as any}
+            optionList={list}
+            style={{ outline: 0 }}
+          ></Select>
+        </div>
       }
       width={1150}
     >

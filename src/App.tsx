@@ -14,13 +14,21 @@ import {
   LocaleProvider,
   Nav,
   Select,
+  Space,
   Typography,
 } from "@douyinfe/semi-ui";
 import HabitItem from "./components/HabitItem";
-import { IconGithubLogo, IconLanguage } from "@douyinfe/semi-icons";
+import {
+  IconExport,
+  IconGithubLogo,
+  IconImport,
+  IconLanguage,
+} from "@douyinfe/semi-icons";
 import type { DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./droppable";
-import { useLocalStorageState } from "ahooks";
+import { useBoolean, useLocalStorageState } from "ahooks";
+import ExportModal from "./pages/workspace/components/ExportModal";
+import ImportModal from "./pages/workspace/components/ImportModal";
 const { Header, Content } = Layout;
 const { Title } = Typography;
 function TimeScale() {
@@ -29,6 +37,10 @@ function TimeScale() {
   const [localeStorage, setLoaleStorage] = useLocalStorageState("locale", {
     defaultValue: "en",
   });
+  const [exportModalShow, { setTrue: setExportShow, setFalse: setExportHide }] =
+    useBoolean(false);
+  const [importModalShow, { setTrue: setImportShow, setFalse: setImportHide }] =
+    useBoolean(false);
   const habits = useLiveQuery(async () => {
     return db.habits?.orderBy("order").toArray();
   });
@@ -102,104 +114,133 @@ function TimeScale() {
     }
   };
   return (
-    <Layout className="h-screen">
-      <Header style={{ backgroundColor: "var(--semi-color-bg-2)" }}>
-        <div>
-          <Nav mode="horizontal">
-            <Nav.Header>
-              <Title>Breeze</Title>
-            </Nav.Header>
-            <Nav.Footer>
-              <Button
-                theme="borderless"
-                type="tertiary"
-                onClick={() => {
-                  window.open(
-                    "https://github.com/BarrySong97/Breeze",
-                    "_blank"
-                  );
-                }}
-                style={{ marginRight: 10 }}
-                icon={<IconGithubLogo size="large" />}
-              />
-              <Select
-                defaultValue="en"
-                onChange={(value) => changeLanguage(value as string)}
-                value={localeStorage}
-                style={{ width: 200, marginRight: 10 }}
-                insetLabel={<IconLanguage />}
-              >
-                <Select.Option value="zh">中文</Select.Option>
-                <Select.Option value="en">English</Select.Option>
-              </Select>
-            </Nav.Footer>
-          </Nav>
-        </div>
-      </Header>
-      <Content style={{ backgroundColor: "#fbfbfb" }} className="overflow-auto">
-        <LocaleProvider
-          locale={semiLocale[localeStorage as keyof typeof semiLocale]}
+    <>
+      <Layout className="h-screen">
+        <Header style={{ backgroundColor: "var(--semi-color-bg-2)" }}>
+          <div>
+            <Nav mode="horizontal">
+              <Nav.Header>
+                <Title>Breeze</Title>
+              </Nav.Header>
+              <Nav.Footer>
+                <Space>
+                  <Button onClick={setImportShow} icon={<IconExport />}>
+                    {t("importModal.title")}
+                  </Button>
+                  <Button onClick={setExportShow} icon={<IconImport />}>
+                    {t("exportModal.title")}
+                  </Button>
+                </Space>
+                <Button
+                  theme="borderless"
+                  type="tertiary"
+                  onClick={() => {
+                    window.open(
+                      "https://github.com/BarrySong97/Breeze",
+                      "_blank"
+                    );
+                  }}
+                  style={{ marginRight: 8, marginLeft: 8 }}
+                  icon={<IconGithubLogo size="large" />}
+                />
+                <Select
+                  defaultValue="en"
+                  onChange={(value) => changeLanguage(value as string)}
+                  value={localeStorage}
+                  style={{ width: 200, marginRight: 10 }}
+                  insetLabel={<IconLanguage />}
+                >
+                  <Select.Option value="zh">中文</Select.Option>
+                  <Select.Option value="en">English</Select.Option>
+                </Select>
+              </Nav.Footer>
+            </Nav>
+          </div>
+        </Header>
+        <Content
+          style={{ backgroundColor: "#fbfbfb" }}
+          className="overflow-auto"
         >
-          <div className={`${styles.home} `}>
-            <div
-              style={{ backgroundColor: "#fbfbfb" }}
-              className="flex sticky top-0 py-4  z-30"
-            >
-              <Input
-                className="mr-2"
-                type="text"
-                value={name}
-                onEnterPress={addHabit}
-                onChange={(e) => setName(e)}
-              />
-              <Button onClick={addHabit} theme="solid" type="primary">
-                {t("home.action.add")}
-              </Button>
-              {/* <Button
+          <LocaleProvider
+            locale={semiLocale[localeStorage as keyof typeof semiLocale]}
+          >
+            <div className={`${styles.home} `}>
+              <div
+                style={{ backgroundColor: "#fbfbfb" }}
+                className="flex sticky top-0 py-4  z-30"
+              >
+                <Input
+                  className="mr-2"
+                  type="text"
+                  value={name}
+                  onEnterPress={addHabit}
+                  onChange={(e) => setName(e)}
+                />
+                <Button onClick={addHabit} theme="solid" type="primary">
+                  {t("home.action.add")}
+                </Button>
+                {/* <Button
                 type="tertiary"
                 // theme="borderless"
                 style={{ marginLeft: 10 }}
                 icon={<IconAscend />}
               ></Button> */}
+              </div>
+              <div style={{ backgroundColor: "#fbfbfb" }}>
+                {sortedHabits && (
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <StrictModeDroppable droppableId="habitList">
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
+                          {sortedHabits?.map((habit, index) => (
+                            <Draggable
+                              key={habit.id}
+                              draggableId={habit.id + ""}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  style={{
+                                    ...provided.draggableProps.style,
+                                    marginBottom: "16px", // 或者您需要的间距大小
+                                  }}
+                                >
+                                  <HabitItem data={habit} />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </StrictModeDroppable>
+                  </DragDropContext>
+                )}
+              </div>
             </div>
-            <div style={{ backgroundColor: "#fbfbfb" }}>
-              {sortedHabits && (
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <StrictModeDroppable droppableId="habitList">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        {sortedHabits?.map((habit, index) => (
-                          <Draggable
-                            key={habit.id}
-                            draggableId={habit.id + ""}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={{
-                                  ...provided.draggableProps.style,
-                                  marginBottom: "16px", // 或者您需要的间距大小
-                                }}
-                              >
-                                <HabitItem data={habit} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </StrictModeDroppable>
-                </DragDropContext>
-              )}
-            </div>
-          </div>
-        </LocaleProvider>
-      </Content>
-    </Layout>
+            <ExportModal
+              data={sortedHabits}
+              title={t("exportModal.title")}
+              visible={exportModalShow}
+              onOk={setExportHide}
+              onCancel={setExportHide}
+            />
+            <ImportModal
+              title={t("importModal.title")}
+              visible={importModalShow}
+              onOk={setImportHide}
+              onCancel={setImportHide}
+            />
+          </LocaleProvider>
+        </Content>
+      </Layout>
+    </>
   );
 }
 

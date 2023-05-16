@@ -18,6 +18,18 @@
     "delete": "Delete",
     "edit": "Edit"
   },
+  "exportModal": {
+    "title": "Export Data",
+    "exportJson": "Export JSON",
+    "exportCsv": "Export CSV"
+  },
+  "importModal": {
+    "title": "Import Data",
+    "importJson": "Import JSON",
+    "importCsv": "Import CSV",
+    "importSuccess": "Import Success",
+    "importFailed": "Import Failed"
+  },
   "yearModal": {
     "title": "Year View",
     "desDate": {

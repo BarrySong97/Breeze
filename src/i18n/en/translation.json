@@ -35,7 +35,7 @@
     "desDate": {
       "currentConsecutiveDays": "Current Consecutive Days",
       "maximumConsecutiveDays": "Maximum Consecutive Days",
-      "checkedDays": "Checked Days",
+      "checkedDays": "Total Checked Days",
       "startedDate": "Stared Date"
     }
   }

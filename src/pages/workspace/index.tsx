@@ -9,7 +9,9 @@ import zh_CN from "@douyinfe/semi-ui/lib/es/locale/source/zh_CN";
 import en_US from "@douyinfe/semi-ui/lib/es/locale/source/en_US";
 import { db } from "../../db";
 import {
+  Avatar,
   Button,
+  Dropdown,
   Input,
   Layout,
   LocaleProvider,
@@ -17,15 +19,19 @@ import {
   Select,
   Typography,
 } from "@douyinfe/semi-ui";
-import HabitItem from "../../components/HabitItem";
+import HabitItem from "./components/HabitItem";
 import { IconGithubLogo, IconLanguage } from "@douyinfe/semi-icons";
 import type { DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "../../droppable";
-import { useBoolean, useLocalStorageState } from "ahooks";
+import { useLocalStorageState } from "ahooks";
+import { useAuth } from "../../auth";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { HabitDTO, HabitsService } from "../../api";
 const { Header, Content } = Layout;
 const { Title } = Typography;
 function App() {
   const [name, setName] = useState("");
+  const { user, signout } = useAuth();
   const { t, i18n } = useTranslation();
   const [localeStorage, setLoaleStorage] = useLocalStorageState("locale", {
     defaultValue: "en",
@@ -41,10 +47,7 @@ function App() {
     try {
       // Add the new friend!
       if (!name) return;
-      await db.habits.add({
-        name,
-        order: habits?.length ?? 0,
-      });
+      addMutation.mutate({ name, order: habits?.length || 0 });
       setName("");
     } catch (error) {
       console.error(error);
@@ -64,10 +67,33 @@ function App() {
     en: en_US,
   } as const;
 
+  const queryClient = useQueryClient();
+  const updateMutation = useMutation(HabitsService.habitsControllerUpdate, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(["habits"], (oldData?: HabitDTO[]) => {
+        const list = oldData?.map((item: any) => {
+          if (item.id === data.id) {
+            return data;
+          }
+          return item;
+        });
+        list?.sort((a, b) => a.order - b.order);
+        return list;
+      });
+    },
+  });
+  const { data: habitList } = useQuery({
+    queryKey: ["habits"],
+    retry: false,
+    refetchOnWindowFocus: false,
+    structuralSharing: false,
+    queryFn: HabitsService.habitsControllerFindAll,
+  });
+
   const onDragEnd = async (result: DropResult) => {
     const { destination, source } = result;
 
-    if (!destination || !sortedHabits) {
+    if (!destination || !habitList) {
       return;
     }
 
@@ -78,30 +104,30 @@ function App() {
       return;
     }
 
-    const newHabits = Array.from(sortedHabits);
+    const newHabits = Array.from(habitList);
     const [removed] = newHabits.splice(source.index, 1);
     newHabits.splice(destination.index, 0, removed);
-    setSortedHabits(newHabits);
+    queryClient.setQueryData(["habits"], newHabits);
     try {
-      await db.transaction("rw", db.habits, async () => {
-        // 获取当前习惯列表并调整顺序
-        const currentHabits = await db.habits?.orderBy("order").toArray();
-        const [removed] = currentHabits.splice(source.index, 1);
-        currentHabits.splice(destination.index, 0, removed);
-
-        // 更新受影响的习惯顺序
-        const startIndex = Math.min(source.index, destination.index);
-        const endIndex = Math.max(source.index, destination.index);
-        for (let i = startIndex; i <= endIndex; i++) {
-          const habit = currentHabits[i];
-          await db.habits.put({ ...habit, order: i });
-        }
+      await updateMutation.mutateAsync({
+        id: removed.id,
+        name: removed.name,
+        order: destination.index,
       });
     } catch (error) {
       // 处理错误，例如显示错误消息
       console.error("Error updating habits order in Dexie:", error);
     }
   };
+
+  const addMutation = useMutation(HabitsService.habitsControllerCreate, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(["habits"], (oldData?: HabitDTO[]) => {
+        return [...(oldData ?? []), data]?.sort((a, b) => a.order - b.order);
+      });
+    },
+  });
+
   return (
     <Layout className="h-screen">
       <Header style={{ backgroundColor: "var(--semi-color-bg-2)" }}>
@@ -133,6 +159,30 @@ function App() {
                 <Select.Option value="zh">中文</Select.Option>
                 <Select.Option value="en">English</Select.Option>
               </Select>
+              <Dropdown
+                position="bottomRight"
+                render={
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => {
+                        signout();
+                      }}
+                    >
+                      退出
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                }
+              >
+                <Avatar
+                  src={user?.avatar}
+                  size="small"
+                  color="light-blue"
+                  style={{ margin: 4 }}
+                ></Avatar>
+                <span className="cursor-pointer">{` ${user?.firstname ?? ""} ${
+                  user?.lastname ?? ""
+                }`}</span>
+              </Dropdown>
             </Nav.Footer>
           </Nav>
         </div>
@@ -156,20 +206,14 @@ function App() {
               <Button onClick={addHabit} theme="solid" type="primary">
                 {t("home.action.add")}
               </Button>
-              {/* <Button
-                type="tertiary"
-                // theme="borderless"
-                style={{ marginLeft: 10 }}
-                icon={<IconAscend />}
-              ></Button> */}
             </div>
             <div style={{ backgroundColor: "#fbfbfb" }}>
-              {sortedHabits && (
+              {habitList && (
                 <DragDropContext onDragEnd={onDragEnd}>
                   <StrictModeDroppable droppableId="habitList">
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
-                        {sortedHabits?.map((habit, index) => (
+                        {habitList?.map((habit, index) => (
                           <Draggable
                             key={habit.id}
                             draggableId={habit.id + ""}

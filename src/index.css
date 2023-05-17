@@ -9,3 +9,10 @@
 .react-calendar-heatmap-weekday-labels {
     margin-right: 8px;
 }
+
+.card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    background-color: white;
+    padding: 20px;
+}

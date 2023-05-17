@@ -1,7 +1,7 @@
 import { FC, memo, useEffect, useRef } from "react";
 import CalHeatmap from "cal-heatmap";
 import "cal-heatmap/cal-heatmap.css";
-import { YearMonthObject } from "../../utils/date";
+import { YearMonthObject } from "../../../../utils/date";
 import moment from "moment";
 export interface HeatMapCalendarProps {
   data?: YearMonthObject[];

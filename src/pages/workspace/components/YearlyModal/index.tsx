@@ -3,15 +3,16 @@ import { FC, useMemo, useState } from "react";
 import {
   getMaxConsecutiveDays,
   classifyDatesByYearAndMonth,
-} from "../../utils/date";
+} from "../../../../utils/date";
 import HeatMapCalendar from "../HeatMapCalendar";
 import { Area, AreaConfig } from "@ant-design/plots";
 import { Select } from "@douyinfe/semi-ui";
 import { IconChevronDown } from "@douyinfe/semi-icons";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
+import { HabitDatesDTO } from "../../../../api";
 export interface YearlyModalProps extends ModalReactProps {
-  dates?: Date[];
+  dates?: HabitDatesDTO[];
   name?: string;
 }
 
@@ -20,13 +21,15 @@ const YearlyModal: FC<YearlyModalProps> = ({ name, dates, ...props }) => {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language;
   const [year, setYear] = useState(today.getFullYear());
-  const consecutiveDays = getMaxConsecutiveDays(dates ?? []);
-  console.log(dates?.[0]);
+  const consecutiveDays = useMemo(
+    () => getMaxConsecutiveDays(dates?.map((v) => new Date(v?.date)) ?? []),
+    [dates]
+  );
 
   const desData = [
     {
       key: t("yearModal.desDate.startedDate"),
-      value: moment(dates?.[0]).format("YYYY-MM-DD") ?? 0,
+      value: moment(dates?.[0]?.date).format("YYYY-MM-DD") ?? 0,
     },
     {
       key: t("yearModal.desDate.currentConsecutiveDays"),
@@ -48,7 +51,8 @@ const YearlyModal: FC<YearlyModalProps> = ({ name, dates, ...props }) => {
     padding: "10px",
   };
   const calendarDates = useMemo(
-    () => classifyDatesByYearAndMonth(dates ?? []),
+    () =>
+      classifyDatesByYearAndMonth(dates?.map((v) => new Date(v?.date)) ?? []),
     [dates]
   );
   const currentYearDates = calendarDates

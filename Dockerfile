@@ -1,4 +1,4 @@
-FROM znck/pnpm:latest AS builder
+FROM gplane/pnpm:latest AS builder
 
 # Create app directory
 WORKDIR /app

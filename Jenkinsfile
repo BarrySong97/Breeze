@@ -14,7 +14,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'docker cp my-react-container:/app/dist  my-nginx:/breeze'
+                sh 'docker run -v ~/nginx/site/breeze:/app/dist --name breeze-front'
             }
         }
     }

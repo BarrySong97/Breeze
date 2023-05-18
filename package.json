@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "api:generate": "openapi --input http://localhost:3000/api-json --output ./src/api --exportCore false",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:build": "docker build -t breeze-front .",
+    "docker": "docker run -v /home/lighthouse/nginx/site/breeze:/app/dist --name breeze-front breeze-front"
   },
   "dependencies": {
     "@ant-design/charts": "^1.4.2",

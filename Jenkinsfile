@@ -14,7 +14,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'docker run -v ~/nginx/site/breeze:/app/dist --name breeze-front'
+                sh 'docker run -v ~/nginx/site/breeze:/app/dist --name breeze-front breeze-front'
             }
         }
     }

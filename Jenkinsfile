@@ -14,7 +14,6 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'docker rm breeze-front'
                 sh 'docker run --rm -v /home/lighthouse/nginx/site/breeze:/app/dist --name breeze-front breeze-front'
             }
         }

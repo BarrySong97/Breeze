@@ -4,6 +4,21 @@
       "add": "添加"
     }
   },
+  "login": {
+    "slogan": "无论多少风雨，不论多少公里",
+    "box": {
+      "login": "登录",
+      "slogan": "找到最好的自己",
+      "button": "Google 登录"
+    }
+  },
+  "index": {
+    "heroText": {
+      "part1": "习惯",
+      "part2": "唯一重要的事情就是持续前进"
+    },
+    "login": "登录"
+  },
   "monthModal": {
     "title": "月视图"
   },

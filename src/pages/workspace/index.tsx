@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.less";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import "../../i18n/config";
 import { useTranslation } from "react-i18next";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -134,7 +134,9 @@ function App() {
         <div>
           <Nav mode="horizontal">
             <Nav.Header>
-              <Title>Breeze</Title>
+              <Title>
+                <Link style={{color: 'black'}} to="/">Breeze</Link>
+              </Title>
             </Nav.Header>
             <Nav.Footer>
               <Button

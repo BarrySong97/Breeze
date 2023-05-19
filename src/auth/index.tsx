@@ -124,7 +124,7 @@ export function RequireAuth({ children }: { children: JSX.Element }) {
     }
   }, []);
 
-  return <AuthLoading loading={authLoading}>{children}</AuthLoading>;
+  return <AuthLoading loading={authLoading && !user}>{children}</AuthLoading>;
 }
 
 export function useAuth() {

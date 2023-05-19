@@ -1,17 +1,16 @@
-import { Button, Card, Notification, Typography } from "@douyinfe/semi-ui";
-import React, { FC, useEffect } from "react";
+import { Button, Typography } from "@douyinfe/semi-ui";
+import { FC } from "react";
 import SignInImage from "../../assets/images/signin.jpg";
 import styles from "./index.module.less";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LogosGoogleIcon } from "../../assets/icons/Google";
 import { TwemojiDashingAway } from "../../assets/icons/icon";
 import { createGoogleLoginUrl } from "../../utils/auth";
-import { AuthService } from "../../api";
-import { OpenAPI } from "../../api/core/OpenAPI";
-import { useAuth } from "../../auth";
+import { useTranslation } from "react-i18next";
 export interface LoginProps {}
 const { Title, Text } = Typography;
 const Login: FC<LoginProps> = () => {
+  const { t } = useTranslation();
   return (
     <div className="h-screen flex relative">
       <div className="absolute left-6 top-4 ">
@@ -20,16 +19,11 @@ const Login: FC<LoginProps> = () => {
             Breeze
           </Title>
           <Text type="tertiary" strong>
-            day by day, to a higher level
+            {t("login.slogan")}
           </Text>
         </Link>
       </div>
-      <div
-        className="w-1/3"
-        // style={{
-        //   backgroundImage: `url(${signUp.src})`,
-        // }}
-      >
+      <div className="w-1/3">
         <img
           src={SignInImage}
           alt="Picture of the author"
@@ -64,11 +58,11 @@ const Login: FC<LoginProps> = () => {
               className="flex flex-col justify-center items-center"
             >
               <Title heading={3} type="primary" strong>
-                登录
+                {t("login.box.login")}
               </Title>
               <div className="mb-1"></div>
               <Text type="secondary" strong>
-                构建更好的自己
+                {t("login.box.slogan")}
               </Text>
             </div>
             <Button
@@ -80,7 +74,7 @@ const Login: FC<LoginProps> = () => {
                 createGoogleLoginUrl();
               }}
             >
-              Google 登录
+              {t("login.box.button")}
             </Button>
           </div>
         </div>

@@ -4,6 +4,21 @@
       "add": "Add Habit"
     }
   },
+  "login": {
+    "slogan": "day by day, to a higher level",
+    "box": {
+      "login": "Login",
+      "slogan": "built best of you",
+      "button": "Login with Google"
+    }
+  },
+  "index": {
+    "heroText": {
+      "part1": "THE ONLY ONE",
+      "part2": "IMPORTANT THING ABOUT HABIT IS KEEP PUSHING"
+    },
+    "login": "Login"
+  },
   "monthModal": {
     "title": "Month View"
   },

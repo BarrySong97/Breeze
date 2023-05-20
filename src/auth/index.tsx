@@ -62,7 +62,7 @@ export function AuthLoading({
 }
 
 export function RequireAuth({ children }: { children: JSX.Element }) {
-  let auth = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   let location = useLocation();
   const [

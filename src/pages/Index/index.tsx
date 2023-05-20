@@ -1,8 +1,10 @@
 import { IconArrowUpRight } from "@douyinfe/semi-icons";
 import { Avatar, Typography } from "@douyinfe/semi-ui";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { AuthService } from "../../api";
+import { OpenAPI } from "../../api/core/OpenAPI";
 import {
   IcBaselineApple,
   MaterialSymbolsAndroid,
@@ -15,6 +17,25 @@ const { Title } = Typography;
 const Index: FC<IndexProps> = () => {
   const { t } = useTranslation();
   const auth = useAuth();
+  const { user, setCurrentUser } = useAuth();
+  const getCurrentUser = async () => {
+    try {
+      const currentUser = await AuthService.authControllerMe();
+      setCurrentUser(currentUser);
+    } catch (error) {
+      localStorage.removeItem("accessToken");
+      OpenAPI.TOKEN = "";
+    }
+  };
+  useEffect(() => {
+    if (!user) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken) {
+        getCurrentUser();
+      }
+    }
+  }, []);
+
   const renderLoginStatus = () => {
     const { user } = auth;
     if (user) {
@@ -42,7 +63,9 @@ const Index: FC<IndexProps> = () => {
         <Title heading={1} style={{ color: "white" }}>
           Breeze
         </Title>
-        <div className={`${styles.link} flex justify-center`}>{renderLoginStatus()}</div>
+        <div className={`${styles.link} flex justify-center`}>
+          {renderLoginStatus()}
+        </div>
       </div>
 
       <main className="flex flex-col justify-center items-center h-full">
@@ -56,7 +79,7 @@ const Index: FC<IndexProps> = () => {
           <div
             className={`${styles.ios} flex items-center justify-center p-2 text-white `}
           >
-            <MaterialSymbolsAndroid className="mr-2 text-3xl" />
+            <IcBaselineApple className="mr-2 text-3xl" />
             <Title heading={5} style={{ color: "white" }}>
               iOS (developing)
             </Title>
@@ -64,7 +87,7 @@ const Index: FC<IndexProps> = () => {
           <div
             className={`${styles.android} flex items-center justify-center p-2 text-white `}
           >
-            <IcBaselineApple className="mr-2 text-3xl" />
+            <MaterialSymbolsAndroid className="mr-2 text-3xl" />
             <Title heading={5} style={{ color: "white" }}>
               Android (developing)
             </Title>

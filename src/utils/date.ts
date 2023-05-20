@@ -160,3 +160,16 @@ export function classifyDatesByYearAndMonth(dates: Date[]): YearMonthObject[] {
     return a.month - b.month;
   });
 }
+
+export function generateYearRange(): number[] {
+  const currentYear = new Date().getFullYear();
+  const startYear = 2010;
+  const endYear = currentYear + 100;
+
+  const years: number[] = [];
+  for (let year = startYear; year <= endYear; year++) {
+    years.push(year);
+  }
+
+  return years;
+}

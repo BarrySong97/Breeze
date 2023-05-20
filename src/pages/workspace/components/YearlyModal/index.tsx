@@ -26,10 +26,17 @@ const YearlyModal: FC<YearlyModalProps> = ({ name, dates, ...props }) => {
     [dates]
   );
 
+  const calendarDates = useMemo(
+    () =>
+      classifyDatesByYearAndMonth(dates?.map((v) => new Date(v?.date)) ?? []),
+    [dates]
+  );
+
+  const startDate = calendarDates.find((v) => v.dates.length)?.dates[0];
   const desData = [
     {
       key: t("yearModal.desDate.startedDate"),
-      value: moment(dates?.[0]?.date).format("YYYY-MM-DD") ?? 0,
+      value: moment(startDate).format("YYYY-MM-DD") ?? 0,
     },
     {
       key: t("yearModal.desDate.currentConsecutiveDays"),
@@ -50,11 +57,6 @@ const YearlyModal: FC<YearlyModalProps> = ({ name, dates, ...props }) => {
     borderRadius: "4px",
     padding: "10px",
   };
-  const calendarDates = useMemo(
-    () =>
-      classifyDatesByYearAndMonth(dates?.map((v) => new Date(v?.date)) ?? []),
-    [dates]
-  );
   const currentYearDates = calendarDates
     .filter((v) => v.year === year)
     ?.map((v) => ({ count: v.dates.length, ...v }));

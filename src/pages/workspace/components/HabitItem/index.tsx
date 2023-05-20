@@ -153,9 +153,9 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
               v.createdAt = response.createdAt;
               v.updatedAt = response.updatedAt;
             }
+            item.dates = [...dates];
           });
         }
-        item.dates = [...dates];
         return item;
       });
     });

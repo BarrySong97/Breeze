@@ -17,16 +17,24 @@ import {
   LocaleProvider,
   Nav,
   Select,
+  Space,
   Typography,
 } from "@douyinfe/semi-ui";
 import HabitItem from "./components/HabitItem";
-import { IconGithubLogo, IconLanguage } from "@douyinfe/semi-icons";
+import {
+  IconExport,
+  IconGithubLogo,
+  IconImport,
+  IconLanguage,
+} from "@douyinfe/semi-icons";
 import type { DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "../../droppable";
-import { useLocalStorageState } from "ahooks";
+import { useBoolean, useLocalStorageState } from "ahooks";
 import { useAuth } from "../../auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HabitDTO, HabitsService } from "../../api";
+import ExportModal from "./components/ExportModal";
+import ImportModal from "./components/ImportModal";
 const { Header, Content } = Layout;
 const { Title } = Typography;
 function App() {
@@ -36,37 +44,10 @@ function App() {
   const [localeStorage, setLoaleStorage] = useLocalStorageState("locale", {
     defaultValue: "en",
   });
-  const habits = useLiveQuery(async () => {
-    return db.habits?.orderBy("order").toArray();
-  });
-  const [sortedHabits, setSortedHabits] = useState(habits);
-  useEffect(() => {
-    setSortedHabits(habits);
-  }, [habits]);
-  async function addHabit() {
-    try {
-      // Add the new friend!
-      if (!name) return;
-      addMutation.mutate({ name, order: habits?.length || 0 });
-      setName("");
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    setLoaleStorage(lng);
-  };
-  useEffect(() => {
-    if (localeStorage) {
-      changeLanguage(localeStorage);
-    }
-  }, [localeStorage]);
-  const semiLocale = {
-    zh: zh_CN,
-    en: en_US,
-  } as const;
-
+  const [exportModalShow, { setTrue: setExportShow, setFalse: setExportHide }] =
+    useBoolean(false);
+  const [importModalShow, { setTrue: setImportShow, setFalse: setImportHide }] =
+    useBoolean(false);
   const queryClient = useQueryClient();
   const updateMutation = useMutation(HabitsService.habitsControllerUpdate, {
     onSuccess: (data) => {
@@ -89,6 +70,30 @@ function App() {
     structuralSharing: false,
     queryFn: HabitsService.habitsControllerFindAll,
   });
+
+  async function addHabit() {
+    try {
+      // Add the new friend!
+      if (!name) return;
+      addMutation.mutate({ name, order: habitList?.length || 0 });
+      setName("");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    setLoaleStorage(lng);
+  };
+  useEffect(() => {
+    if (localeStorage) {
+      changeLanguage(localeStorage);
+    }
+  }, [localeStorage]);
+  const semiLocale = {
+    zh: zh_CN,
+    en: en_US,
+  } as const;
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source } = result;
@@ -135,10 +140,20 @@ function App() {
           <Nav mode="horizontal">
             <Nav.Header>
               <Title>
-                <Link style={{color: 'black'}} to="/">Breeze</Link>
+                <Link style={{ color: "black" }} to="/">
+                  Breeze
+                </Link>
               </Title>
             </Nav.Header>
             <Nav.Footer>
+              <Space>
+                <Button onClick={setImportShow} icon={<IconExport />}>
+                  {t("importModal.title")}
+                </Button>
+                <Button onClick={setExportShow} icon={<IconImport />}>
+                  {t("exportModal.title")}
+                </Button>
+              </Space>
               <Button
                 theme="borderless"
                 type="tertiary"
@@ -244,6 +259,19 @@ function App() {
               )}
             </div>
           </div>
+          <ExportModal
+            data={habitList}
+            title={t("exportModal.title")}
+            visible={exportModalShow}
+            onOk={setExportHide}
+            onCancel={setExportHide}
+          />
+          <ImportModal
+            title={t("importModal.title")}
+            visible={importModalShow}
+            onOk={setImportHide}
+            onCancel={setImportHide}
+          />
         </LocaleProvider>
       </Content>
     </Layout>

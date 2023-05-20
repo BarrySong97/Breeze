@@ -1,6 +1,7 @@
+import { HabitDTO, HabitsService } from "../api";
 import { Habit } from "../db";
 
-export function exportToJson(fileName: string, habits?: Habit[]) {
+export function exportToJson(fileName: string, habits?: HabitDTO[]) {
   if (!habits?.length) {
     return;
   }
@@ -18,7 +19,7 @@ export function exportToJson(fileName: string, habits?: Habit[]) {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
-export function exportToCsv(fileName: string, habits?: Habit[]) {
+export function exportToCsv(fileName: string, habits?: HabitDTO[]) {
   if (!habits?.length) {
     return;
   }
@@ -28,8 +29,10 @@ export function exportToCsv(fileName: string, habits?: Habit[]) {
     const { id, name, order, dates } = habit;
 
     if (dates && dates.length > 0) {
-      dates.forEach((date) => {
-        const formattedDate = date.toISOString().split("T")[0];
+      dates.forEach((checkedDate) => {
+        const formattedDate = new Date(checkedDate.date)
+          .toISOString()
+          .split("T")[0];
         csvContent += `${id || ""},${name},${order},${formattedDate}\n`;
       });
     } else {
@@ -48,29 +51,29 @@ export function exportToCsv(fileName: string, habits?: Habit[]) {
 
   document.body.removeChild(link);
 }
-export function importFromCsvOrJson(file: File): Promise<Habit[]> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (event: any) => {
-      const contents = event.target.result as string;
+export function importFromCsvOrJson(file: File): Promise<HabitDTO[]> {
+  // return new Promise((resolve, reject) => {
+  //   const reader = new FileReader();
+  //   reader.onload = (event: any) => {
+  //     const contents = event.target.result as string;
 
-      if (file.type === "text/csv") {
-        const habits = parseCsvData(contents);
-        resolve(habits);
-      } else if (file.type === "application/json") {
-        const habits = parseJsonData(contents);
-        resolve(habits);
-      } else {
-        reject(new Error("Unsupported file type"));
-      }
-    };
+  //     if (file.type === "text/csv") {
+  //       // const habits = parseCsvData(contents);
+  //       // resolve(habits);
+  //     } else if (file.type === "application/json") {
+  //       // const habits = parseJsonData(contents);
+  //       // resolve(habits);
+  //     } else {
+  //       reject(new Error("Unsupported file type"));
+  //     }
+  //   };
 
-    reader.onerror = (event) => {
-      reject(new Error("File read error"));
-    };
+  //   reader.onerror = (event) => {
+  //     reject(new Error("File read error"));
+  //   };
 
-    reader.readAsText(file);
-  });
+  //   reader.readAsText(file);
+  // });
 }
 
 function parseCsvData(csvData: string): Habit[] {
@@ -105,22 +108,7 @@ function parseCsvData(csvData: string): Habit[] {
   return Object.values(habitsMap);
 }
 
-export function parseJsonData(jsonData: string): Habit[] {
-  const data = JSON.parse(jsonData);
-  const habits: Habit[] = [];
-
-  for (const item of data) {
-    const habit: Habit = {
-      id: item.id ? parseInt(item.id) : undefined,
-      name: item.name,
-      order: parseInt(item.order),
-      dates: item.dates
-        ? item.dates.map((dateStr: string) => new Date(dateStr))
-        : undefined,
-    };
-
-    habits.push(habit);
-  }
-
-  return habits;
+export function parseJsonData(jsonData: string): HabitDTO[] {
+  const data = JSON.parse(jsonData) as HabitDTO[];
+  return data;
 }

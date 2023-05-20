@@ -1,53 +1,54 @@
 import { Button, Modal, Notification, Space, Upload } from "@douyinfe/semi-ui";
 import { ModalReactProps } from "@douyinfe/semi-ui/lib/es/modal";
+import { useQueryClient } from "@tanstack/react-query";
 import { useBoolean } from "ahooks";
-import React, { ChangeEvent, FC, useState } from "react";
+import { FC } from "react";
 import { useTranslation } from "react-i18next";
+import { HabitDTO, HabitsService } from "../../../../api";
 import { PhFileCsv } from "../../../../assets/icons/CSV";
 import { BiFiletypeJson } from "../../../../assets/icons/Json";
-import { db, Habit } from "../../../../db";
-import {
-  exportToCsv,
-  exportToJson,
-  importFromCsvOrJson,
-} from "../../../../utils/export";
 export interface ImportModalProps extends ModalReactProps {}
 const ImportModal: FC<ImportModalProps> = ({ ...props }) => {
   const { t } = useTranslation();
-
+  const queryClient = useQueryClient();
   const [
-    importLoading,
-    { setTrue: setImortLoadingTrue, setFalse: setImportLoadingFalse },
+    importJsonLoading,
+    { setTrue: setImortJsonLoadingTrue, setFalse: setImportJsonLoadingFalse },
   ] = useBoolean(false);
-  async function bulkInsertData(habits: Habit[]) {
-    await db.transaction("rw", db.habits, async () => {
-      for (const habit of habits) {
-        await db.habits.add(habit);
-      }
-    });
-  }
-  const handleUpload = async (habits: Habit[]) => {
-    // 在这里使用解析后的 habits 数组
+  const [
+    importCSVLoading,
+    { setTrue: setImortCSVLoadingTrue, setFalse: setImportCSVLoadingFalse },
+  ] = useBoolean(false);
+  async function bulkInsertData(habits: HabitDTO[]) {}
+  const handleFileChange = async (file: File) => {
+    if (!file) return;
     try {
-      await bulkInsertData(habits);
+      if (file.type === "application/json") {
+        setImortJsonLoadingTrue();
+        await HabitsService.habitsControllerImportJson({
+          file: file,
+        });
+      } else {
+        setImortCSVLoadingTrue();
+        await HabitsService.habitsControllerImportCsv({
+          file: file,
+        });
+      }
+      queryClient.fetchQuery(["habits"]);
       Notification.success({
         position: "top",
         title: t("importModal.importSuccess"),
       });
+      props.onOk?.({} as any);
     } catch (error) {
       Notification.error({
         position: "top",
         title: t("importModal.importFailed"),
       });
     } finally {
-      setImportLoadingFalse();
+      setImportJsonLoadingFalse();
+      setImportCSVLoadingFalse();
     }
-  };
-  const handleFileChange = async (file: File) => {
-    if (!file) return;
-    setImortLoadingTrue();
-    const habits = await importFromCsvOrJson(file);
-    handleUpload(habits);
   };
 
   return (
@@ -56,12 +57,14 @@ const ImportModal: FC<ImportModalProps> = ({ ...props }) => {
         <Space>
           <Upload
             fileList={[]}
+            accept=".json"
+            // action="/api/habits/json"
             onFileChange={(file) => {
               handleFileChange(file?.[0]);
             }}
           >
             <Button
-              loading={importLoading}
+              loading={importJsonLoading}
               icon={<BiFiletypeJson />}
               size="large"
             >
@@ -70,12 +73,13 @@ const ImportModal: FC<ImportModalProps> = ({ ...props }) => {
           </Upload>
           <Upload
             fileList={[]}
+            accept=".csv"
             onFileChange={(file) => {
               handleFileChange(file?.[0]);
             }}
           >
             <Button
-              loading={importLoading}
+              loading={importCSVLoading}
               icon={<PhFileCsv />}
               size="large"
               type="secondary"

@@ -19,7 +19,6 @@ const ImportModal: FC<ImportModalProps> = ({ ...props }) => {
     importCSVLoading,
     { setTrue: setImortCSVLoadingTrue, setFalse: setImportCSVLoadingFalse },
   ] = useBoolean(false);
-  async function bulkInsertData(habits: HabitDTO[]) {}
   const handleFileChange = async (file: File) => {
     if (!file) return;
     try {

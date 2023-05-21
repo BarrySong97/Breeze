@@ -54,7 +54,7 @@ function App() {
       queryClient.setQueryData(["habits"], (oldData?: HabitDTO[]) => {
         const list = oldData?.map((item: any) => {
           if (item.id === data.id) {
-            return data;
+            return { ...data, dates: item.dates };
           }
           return item;
         });

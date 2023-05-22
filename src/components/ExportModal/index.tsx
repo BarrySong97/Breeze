@@ -2,10 +2,10 @@ import { Button, Modal, Space } from "@douyinfe/semi-ui";
 import { ModalReactProps } from "@douyinfe/semi-ui/lib/es/modal";
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
-import { PhFileCsv } from "../../../../assets/icons/CSV";
-import { BiFiletypeJson } from "../../../../assets/icons/Json";
-import { Habit } from "../../../../db";
-import { exportToCsv, exportToJson } from "../../../../utils/export";
+import { PhFileCsv } from "../../assets/icons/CSV";
+import { BiFiletypeJson } from "../../assets/icons/Json";
+import { Habit } from "../../db";
+import { exportToCsv, exportToJson } from "../../utils/export";
 export interface ExportModalProps extends ModalReactProps {
   data?: Habit[];
 }

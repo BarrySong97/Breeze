@@ -3,14 +3,14 @@ import { ModalReactProps } from "@douyinfe/semi-ui/lib/es/modal";
 import { useBoolean } from "ahooks";
 import React, { ChangeEvent, FC, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PhFileCsv } from "../../../../assets/icons/CSV";
-import { BiFiletypeJson } from "../../../../assets/icons/Json";
-import { db, Habit } from "../../../../db";
+import { PhFileCsv } from "../../assets/icons/CSV";
+import { BiFiletypeJson } from "../../assets/icons/Json";
+import { db, Habit } from "../../db";
 import {
   exportToCsv,
   exportToJson,
   importFromCsvOrJson,
-} from "../../../../utils/export";
+} from "../../utils/export";
 export interface ImportModalProps extends ModalReactProps {}
 const ImportModal: FC<ImportModalProps> = ({ ...props }) => {
   const { t } = useTranslation();
@@ -34,6 +34,7 @@ const ImportModal: FC<ImportModalProps> = ({ ...props }) => {
         position: "top",
         title: t("importModal.importSuccess"),
       });
+      props.onCancel?.({} as any);
     } catch (error) {
       Notification.error({
         position: "top",

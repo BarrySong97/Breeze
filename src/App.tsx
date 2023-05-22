@@ -27,8 +27,8 @@ import {
 import type { DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./droppable";
 import { useBoolean, useLocalStorageState } from "ahooks";
-import ExportModal from "./pages/workspace/components/ExportModal";
-import ImportModal from "./pages/workspace/components/ImportModal";
+import ExportModal from "./components/ExportModal";
+import ImportModal from "./components/ImportModal";
 const { Header, Content } = Layout;
 const { Title } = Typography;
 function TimeScale() {

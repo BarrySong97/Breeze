@@ -163,7 +163,7 @@ function App() {
                     "_blank"
                   );
                 }}
-                style={{ marginRight: 10 }}
+                style={{ marginRight: 10, marginLeft: 10 }}
                 icon={<IconGithubLogo size="large" />}
               />
               <Select

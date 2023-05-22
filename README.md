@@ -8,7 +8,7 @@ Breeze is a simple app to track your habit.
 
 [Cloud Version (Data Stored on Server)](http://www.breezelite.cn/)
 
-it provides 3 types of views for you to check on your habit period.
+it provides 3 types of views for you to check on your habit trends.
 
 ## Week view
 
@@ -29,12 +29,13 @@ Clicking on the habit itself will open the yearly view.
 Both the weekly and yearly views allow for check-ins (simply click on the corresponding date to check in), with the yearly view serving as a way to display the data for the entire year.
 
 In the yearly view, you can see...
+[![1684743578945.png](https://pic.peo.pw/a/2023/05/22/646b25a33dc81.png)](https://pic.peo.pw/a/2023/05/22/646b25a33dc81.png)
 
 - Start date of the check-in
 
-- Maximum consecutive check-in days (longest streak)
-
 - Current streak of consecutive check-in days
+
+- Maximum consecutive check-in days (longest streak)
 
 - Total number of check-in days (sum of all signed-in days)
 
@@ -43,7 +44,7 @@ And two crucial charts:
 - Line graph
   [![1684738134876.png](https://pic.peo.pw/a/2023/05/22/646b105a54a56.png)](https://pic.peo.pw/a/2023/05/22/646b105a54a56.png)
 - Heatmap
-  [![1684738125250.png](https://pic.peo.pw/a/2023/05/22/646b1059e7b36.png)](https://pic.peo.pw/a/2023/05/22/646b1059e7b36.png)
+[![1684743660799.png](https://pic.peo.pw/a/2023/05/22/646b25ef78a85.png)](https://pic.peo.pw/a/2023/05/22/646b25ef78a85.png)
 
 # How to develop
 

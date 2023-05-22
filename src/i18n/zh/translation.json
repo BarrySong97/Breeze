@@ -24,6 +24,8 @@
   },
   "habitItem": {
     "delete": "刪除",
+    "exportJson": "导出 JSON",
+    "exportCSV": "导出 CSV",
     "edit": "修改"
   },
   "editModal": {

@@ -17,6 +17,7 @@ import YearlyModal from "../YearlyModal";
 import EditModal from "../EditModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { HabitDTO, HabitsService } from "../../../../api";
+import { exportToCsv, exportToJson } from "../../../../utils/export";
 export interface HabitItemProps {
   data: HabitDTO;
 }
@@ -68,6 +69,13 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
       },
     });
   };
+  const onExport = (type: "JSON" | "CSV") => {
+    if (type === "CSV") {
+      exportToCsv(`${data.name}.csv`, [data]);
+    } else {
+      exportToJson(`${data.name}.json`, [data]);
+    }
+  };
   const renderDropDown = () => {
     return (
       <Space>
@@ -93,6 +101,12 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
                 }}
               >
                 {t("habitItem.edit")}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => onExport("JSON")}>
+                {t("habitItem.exportJson")}
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => onExport("CSV")}>
+                {t("habitItem.exportCSV")}
               </Dropdown.Item>
               <Dropdown.Item type="danger" onClick={onDelete}>
                 {t("habitItem.delete")}

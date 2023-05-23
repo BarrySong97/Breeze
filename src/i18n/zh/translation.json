@@ -9,7 +9,9 @@
   },
   "habitItem": {
     "delete": "刪除",
-    "edit": "修改"
+    "edit": "修改",
+    "exportJson": "导出 JSON",
+    "exportCsv": "导出 CSV"
   },
   "editModal": {
     "title": "修改习惯"

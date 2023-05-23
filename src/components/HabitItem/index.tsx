@@ -15,6 +15,7 @@ import { IconMore } from "@douyinfe/semi-icons";
 import { MaterialSymbolsCalendarMonth } from "../../assets/icons/HeatMapCalendar";
 import YearlyModal from "../YearlyModal";
 import EditModal from "../EditModal";
+import { exportToCsv, exportToJson } from "../../utils/export";
 export interface HabitItemProps {
   data: Habit;
 }
@@ -42,6 +43,16 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
       },
     });
   };
+
+  const onExport = (type: "json" | "csv") => {
+    if (!data?.id) return;
+    if (type === "json") {
+      exportToJson(`${data.name}.json`, [data]);
+    } else {
+      exportToCsv(`${data.name}.csv`, [data]);
+    }
+  };
+
   const renderDropDown = () => {
     return (
       <Space>
@@ -67,6 +78,20 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
                 }}
               >
                 {t("habitItem.edit")}
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  onExport("json");
+                }}
+              >
+                {t("habitItem.exportJson")}
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  onExport("csv");
+                }}
+              >
+                {t("habitItem.exportCsv")}
               </Dropdown.Item>
               <Dropdown.Item type="danger" onClick={onDelete}>
                 {t("habitItem.delete")}

@@ -16,7 +16,9 @@
   },
   "habitItem": {
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "exportJson": "Export JSON",
+    "exportCsv": "Export CSV"
   },
   "exportModal": {
     "title": "Export Data",

@@ -16,12 +16,17 @@
     background-color: white;
     padding: 20px;
 }
+
 :root {
     --c-bg: transparent;
     --c-scrollbar: #bbb;
     --c-scrollbar-hover: #bbb;
 }
 
+.components-datepicker-demo-day-selected {
+    color: var(--semi-color-bg-2);
+    background: var(--semi-color-primary);
+}
 
 * {
     scrollbar-color: var(--c-scrollbar) var(--c-bg);

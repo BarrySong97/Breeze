@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.less";
-import { useLiveQuery } from "dexie-react-hooks";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../../i18n/config";
 import { useTranslation } from "react-i18next";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import zh_CN from "@douyinfe/semi-ui/lib/es/locale/source/zh_CN";
 import en_US from "@douyinfe/semi-ui/lib/es/locale/source/en_US";
-import { db } from "../../db";
 import {
   Avatar,
   Button,

@@ -8,8 +8,7 @@ import "@douyinfe/semi-ui/dist/css/semi.min.css";
 import Login from "./pages/Login";
 import { AuthProvider, RequireAuth } from "./auth";
 import Index from "./pages/Index";
-const router = createBrowserRouter([
-  {
+const router = createBrowserRouter([ {
     path: "/",
     element: (
       <AuthProvider>

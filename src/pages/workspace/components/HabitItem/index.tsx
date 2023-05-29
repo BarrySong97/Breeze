@@ -127,25 +127,34 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     );
   };
 
-  const onCheck = async (day: Date) => {
+  const onCheck = async (day: Date, isSelected: boolean) => {
     if (!data.id) return;
 
-    const { dates = [] } = data;
-    const index = dates?.findIndex((v) =>
-      areDatesOnSameDay(new Date(v.date), day)
-    );
-    const checked = dates?.[index];
-    if (index !== undefined && index > -1) {
-      dates?.splice(index, 1);
+    // const { dates = [] } = data;
+    let checkedId = "";
+    if (isSelected) {
+      data.dates = data.dates?.filter((v) => {
+        const result = areDatesOnSameDay(new Date(v.date), day);
+        if (result) {
+          checkedId = v.id;
+        }
+        return !result;
+      });
     } else {
-      dates?.push({
+      const insert = {
         date: day.toISOString(),
         id: "latest",
         habitId: data.id,
         createdAt: "",
         updatedAt: "",
-      });
+      };
+      if (data.dates) {
+        data.dates?.push(insert);
+      } else {
+        data.dates = [insert];
+      }
     }
+    // const checked = dates?.[index];
 
     queryClient.setQueryData(["habits"], (oldData?: HabitDTO[]) => {
       return [...(oldData ?? [])];
@@ -156,18 +165,18 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     const response = await HabitsService.habitsControllerCheck({
       date: day.toISOString(),
       habitId: data.id,
-      id: checked?.id,
+      id: checkedId,
     });
     queryClient.setQueryData(["habits"], (oldData?: HabitDTO[]) => {
       return oldData?.map((item: HabitDTO) => {
         if (item.id === data.id) {
-          dates?.forEach((v) => {
-            if (v.id === "latest") {
+          item.dates?.forEach((v) => {
+            if (areDatesOnSameDay(new Date(v.date), day)) {
               v.id = response.id;
               v.createdAt = response.createdAt;
               v.updatedAt = response.updatedAt;
             }
-            item.dates = [...dates];
+            item.dates = [...(item.dates ?? [])];
           });
         }
         return item;
@@ -207,7 +216,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
                 <div
                   onClick={(e) => {
                     e.stopPropagation();
-                    onCheck(day);
+                    onCheck(day, !!checked);
                   }}
                   className={`${styles.dateItem} ${checkedClassName}  rounded-full cursor-pointer`}
                 >

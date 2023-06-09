@@ -45,7 +45,13 @@ const HeatMapCalendar: FC<HeatMapCalendarProps> = ({ data, lang }) => {
       });
     }
   }, [data]);
-  return <div id="cal-heatmap" className="mb-6" ref={calHeatmapRef}></div>;
+  return (
+    <div
+      id="cal-heatmap"
+      className="mb-6 w-full overflow-auto"
+      ref={calHeatmapRef}
+    ></div>
+  );
 };
 
 export default memo(HeatMapCalendar);

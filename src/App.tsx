@@ -14,6 +14,7 @@ import {
   LocaleProvider,
   Nav,
   Select,
+  SideSheet,
   Space,
   Typography,
 } from "@douyinfe/semi-ui";
@@ -29,6 +30,7 @@ import { StrictModeDroppable } from "./droppable";
 import { useBoolean, useLocalStorageState } from "ahooks";
 import ExportModal from "./components/ExportModal";
 import ImportModal from "./components/ImportModal";
+import YearlyContent from "./components/YearlyContent";
 const { Header, Content } = Layout;
 const { Title } = Typography;
 function TimeScale() {
@@ -122,27 +124,31 @@ function TimeScale() {
               <Nav.Header>
                 <Title>Breeze</Title>
               </Nav.Header>
+
               <Nav.Footer>
-                <Space>
-                  <Button onClick={setImportShow} icon={<IconExport />}>
-                    {t("importModal.title")}
-                  </Button>
-                  <Button onClick={setExportShow} icon={<IconImport />}>
-                    {t("exportModal.title")}
-                  </Button>
-                </Space>
-                <Button
-                  theme="borderless"
-                  type="tertiary"
-                  onClick={() => {
-                    window.open(
-                      "https://github.com/BarrySong97/Breeze",
-                      "_blank"
-                    );
-                  }}
-                  style={{ marginRight: 8, marginLeft: 8 }}
-                  icon={<IconGithubLogo size="large" />}
-                />
+                <div className="md:flex items-center hidden">
+                  <Space>
+                    <Button onClick={setImportShow} icon={<IconExport />}>
+                      {t("importModal.title")}
+                    </Button>
+                    <Button onClick={setExportShow} icon={<IconImport />}>
+                      {t("exportModal.title")}
+                    </Button>
+                  </Space>
+                  <Button
+                    className="hidden"
+                    theme="borderless"
+                    type="tertiary"
+                    onClick={() => {
+                      window.open(
+                        "https://github.com/BarrySong97/Breeze",
+                        "_blank"
+                      );
+                    }}
+                    style={{ marginRight: 8, marginLeft: 8 }}
+                    icon={<IconGithubLogo size="large" />}
+                  />
+                </div>
                 <Select
                   defaultValue="en"
                   onChange={(value) => changeLanguage(value as string)}
@@ -159,7 +165,7 @@ function TimeScale() {
         </Header>
         <Content
           style={{ backgroundColor: "#fbfbfb" }}
-          className="overflow-auto"
+          className="overflow-auto "
         >
           <LocaleProvider
             locale={semiLocale[localeStorage as keyof typeof semiLocale]}
@@ -167,24 +173,19 @@ function TimeScale() {
             <div className={`${styles.home} `}>
               <div
                 style={{ backgroundColor: "#fbfbfb" }}
-                className="flex sticky top-0 py-4  z-30"
+                className="flex sticky top-0 py-4 z-30 "
               >
                 <Input
-                  className="mr-2"
+                  className="mr-2 "
                   type="text"
                   value={name}
+                  placeholder={t("home.addInputPlaceholder")}
                   onEnterPress={addHabit}
                   onChange={(e) => setName(e)}
                 />
                 <Button onClick={addHabit} theme="solid" type="primary">
                   {t("home.action.add")}
                 </Button>
-                {/* <Button
-                type="tertiary"
-                // theme="borderless"
-                style={{ marginLeft: 10 }}
-                icon={<IconAscend />}
-              ></Button> */}
               </div>
               <div style={{ backgroundColor: "#fbfbfb" }}>
                 {sortedHabits && (

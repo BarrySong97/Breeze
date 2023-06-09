@@ -15,6 +15,7 @@ const EditModal: FC<EditModalProps> = ({ habit, onOk, ...props }) => {
         if (!habit.id) return;
         db.habits.update(habit.id, { name: value });
       }}
+      width={300}
     >
       <Input value={value} onChange={(e) => setValue(e)} />
     </Modal>

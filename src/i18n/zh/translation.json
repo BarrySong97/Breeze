@@ -2,7 +2,8 @@
   "home": {
     "action": {
       "add": "添加"
-    }
+    },
+    "addInputPlaceholder": "输入习惯名称"
   },
   "monthModal": {
     "title": "月视图"
@@ -34,6 +35,12 @@
   },
   "yearModal": {
     "title": "年视图",
+    "calendarTitle": "全年日历图",
+    "lineChartTitle": "全年折线图",
+    "lineChart": {
+      "yField": "天数",
+      "xField": "月份"
+    },
     "desDate": {
       "currentConsecutiveDays": "目前连续天数",
       "maximumConsecutiveDays": "最大连续天数",

@@ -2,7 +2,8 @@
   "home": {
     "action": {
       "add": "Add Habit"
-    }
+    },
+    "addInputPlaceholder": "Habit Name"
   },
   "monthModal": {
     "title": "Month View"
@@ -34,6 +35,12 @@
   },
   "yearModal": {
     "title": "Year View",
+    "calendarTitle": "Calendar View",
+    "lineChartTitle": "Line Chart View",
+    "lineChart": {
+      "yField": "Checked Days",
+      "xField": "Month"
+    },
     "desDate": {
       "currentConsecutiveDays": "Current Consecutive Days",
       "maximumConsecutiveDays": "Maximum Consecutive Days",

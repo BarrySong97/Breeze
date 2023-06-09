@@ -1,4 +1,11 @@
-import { Button, Card, Dropdown, Modal, Space } from "@douyinfe/semi-ui";
+import {
+  Button,
+  Card,
+  Dropdown,
+  Modal,
+  SideSheet,
+  Space,
+} from "@douyinfe/semi-ui";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
 import { FC, useMemo, useState } from "react";
@@ -16,6 +23,7 @@ import { MaterialSymbolsCalendarMonth } from "../../assets/icons/HeatMapCalendar
 import YearlyModal from "../YearlyModal";
 import EditModal from "../EditModal";
 import { exportToCsv, exportToJson } from "../../utils/export";
+import { isMobile } from "../../utils/others";
 export interface HabitItemProps {
   data: Habit;
 }
@@ -33,10 +41,12 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     { setTrue: setEditModalShow, setFalse: setEditModalHide },
   ] = useBoolean(false);
   const [overviewVisible, setOverviewVisible] = useState(false);
+  const mobile = isMobile();
   const onDelete = async () => {
     Modal.error({
       title: t("deleteModal.title"),
       content: t("deleteModal.description"),
+      width: 300,
       onOk: async () => {
         if (!data.id) return;
         await db.habits.delete(data.id);
@@ -130,7 +140,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
     <>
       <div onClick={() => setOverviewVisible(true)}>
         <Card
-          shadows="hover"
+          shadows={mobile ? "" : "hover"}
           className={`${styles.habit} `}
           title={data.name}
           headerExtraContent={renderDropDown()}
@@ -193,6 +203,7 @@ const HabitItem: FC<HabitItemProps> = ({ data }) => {
         visible={overviewVisible}
         name={data?.name}
         dates={data?.dates}
+        mobile={mobile}
         footer={null}
         onCancel={() => {
           setOverviewVisible(false);

@@ -1,89 +1,28 @@
 import Modal, { ModalReactProps } from "@douyinfe/semi-ui/lib/es/modal";
 import { FC, useMemo, useState } from "react";
-import {
-  getMaxConsecutiveDays,
-  classifyDatesByYearAndMonth,
-} from "../../utils/date";
-import HeatMapCalendar from "../HeatMapCalendar";
-import { Area, AreaConfig } from "@ant-design/plots";
-import { Select } from "@douyinfe/semi-ui";
+import { classifyDatesByYearAndMonth } from "../../utils/date";
+import { Select, SideSheet } from "@douyinfe/semi-ui";
 import { IconChevronDown } from "@douyinfe/semi-icons";
-import { useTranslation } from "react-i18next";
-import moment from "moment";
+import YearlyContent from "../YearlyContent";
 export interface YearlyModalProps extends ModalReactProps {
   dates?: Date[];
   name?: string;
+  mobile: boolean;
 }
 
 const today = new Date();
-const YearlyModal: FC<YearlyModalProps> = ({ name, dates, ...props }) => {
-  const { t, i18n } = useTranslation();
-  const currentLang = i18n.language;
+const YearlyModal: FC<YearlyModalProps> = ({
+  mobile,
+  name,
+  dates,
+  ...props
+}) => {
   const [year, setYear] = useState(today.getFullYear());
-  const consecutiveDays = getMaxConsecutiveDays(dates ?? []);
-  console.log(dates?.[0]);
 
-  const desData = [
-    {
-      key: t("yearModal.desDate.startedDate"),
-      value: moment(dates?.[0]).format("YYYY-MM-DD") ?? 0,
-    },
-    {
-      key: t("yearModal.desDate.currentConsecutiveDays"),
-      value: consecutiveDays.countFromLast,
-    },
-    {
-      key: t("yearModal.desDate.maximumConsecutiveDays"),
-      value: consecutiveDays.maxCount,
-    },
-    {
-      key: t("yearModal.desDate.checkedDays"),
-      value: dates?.length ?? 0,
-    },
-  ];
-  const style = {
-    boxShadow: "var(--semi-shadow-elevated)",
-    backgroundColor: "var(--semi-color-bg-2)",
-    borderRadius: "4px",
-    padding: "10px",
-  };
   const calendarDates = useMemo(
     () => classifyDatesByYearAndMonth(dates ?? []),
     [dates]
   );
-  const currentYearDates = calendarDates
-    .filter((v) => v.year === year)
-    ?.map((v) => ({ count: v.dates.length, ...v }));
-
-  const config: AreaConfig = {
-    data: currentYearDates.map((v) => ({
-      month: v.month + "",
-      count: v.count,
-    })),
-    xField: "month",
-    yField: "count",
-    smooth: true,
-    xAxis: {
-      range: [0, 1],
-    },
-    yAxis: {
-      grid: null,
-    },
-    label: {
-      style: {
-        fill: "blue",
-        opacity: 0.6,
-        fontSize: 12,
-      },
-      position: "middle",
-      // rotate: true,
-    },
-    areaStyle: () => {
-      return {
-        fill: "l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff",
-      };
-    },
-  };
   const getYearOptions = () => {
     // const year
     const year = [...new Set(calendarDates.map((v) => v.year))];
@@ -130,37 +69,46 @@ const YearlyModal: FC<YearlyModalProps> = ({ name, dates, ...props }) => {
       </div>
     );
   };
-  return (
-    <Modal
-      {...props}
-      title={
-        <div className="flex items-center">
-          {name}
-          <Select
-            value={year}
-            onChange={(value) => setYear(value as number)}
-            triggerRender={triggerRender2 as any}
-            optionList={list}
-            style={{ outline: 0 }}
-          ></Select>
-        </div>
-      }
-      width={1150}
-    >
-      <div className="mb-6 flex">
-        {desData.map((v) => {
-          return (
-            <div style={style} className="flex-1 mr-2" key={v.key}>
-              <div className="text-lg font-semibold">{v.value}</div>
-              <div>{v.key}</div>
-            </div>
-          );
-        })}
+  const renderTitle = () => {
+    return (
+      <div className="flex items-center">
+        {name}
+        <Select
+          value={year}
+          onChange={(value) => setYear(value as number)}
+          triggerRender={triggerRender2 as any}
+          optionList={list}
+          style={{ outline: 0 }}
+        ></Select>
       </div>
-      <HeatMapCalendar lang={currentLang} data={currentYearDates} />
-      <div className="mb-6">{dates?.length ? <Area {...config} /> : null}</div>
-    </Modal>
-  );
+    );
+  };
+  const renderContent = () => {
+    return <YearlyContent dates={dates} year={year} />;
+  };
+  const title = renderTitle();
+  const content = renderContent();
+  const renderSide = () => {
+    return (
+      <SideSheet
+        title={title}
+        visible={props.visible}
+        onCancel={(e) => props.onCancel?.(e as any)}
+        width={"100vw"}
+      >
+        {content}
+      </SideSheet>
+    );
+  };
+
+  const renderModal = () => {
+    return (
+      <Modal {...props} title={title} width={1150}>
+        {content}
+      </Modal>
+    );
+  };
+  return mobile ? renderSide() : renderModal();
 };
 
 export default YearlyModal;

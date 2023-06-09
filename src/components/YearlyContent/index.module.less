@@ -1,0 +1,21 @@
+.desc {
+  display: flex;
+  @media screen and (max-width: 768px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+  }
+
+  .descItem {
+    flex: 1;
+    box-shadow: var(--semi-shadow-elevated);
+    margin-right: 8px;
+
+    @media screen and (max-width: 768px) {
+      box-shadow: none;
+      margin-right: 0px;
+      background-color: var(--semi-color-bg-0);
+      border: 1px solid var(--semi-color-border);
+    }
+  }
+}

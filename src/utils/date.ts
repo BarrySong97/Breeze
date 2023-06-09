@@ -108,6 +108,9 @@ export type YearMonthObject = {
 };
 
 export function classifyDatesByYearAndMonth(dates: Date[]): YearMonthObject[] {
+  if (dates.length === 0) {
+    return [];
+  }
   const classifiedDates: YearMonthObject[] = [];
 
   dates.forEach((date) => {

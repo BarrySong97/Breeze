@@ -75,29 +75,56 @@ export function getMaxConsecutiveDays(dates: Date[]): MaxDays {
       countFromLast: dates.length,
     };
   }
-
   dates.sort((a, b) => a.getTime() - b.getTime());
 
-  let maxCount = 1;
-  let dp = [1];
+  let maxForward = 1;
+  let currentForward = 1;
 
   for (let i = 1; i < dates.length; i++) {
-    const diff = dates[i].getTime() - dates[i - 1].getTime();
+    // 提取天数,忽略时间
+    const prevDate = new Date(
+      dates[i - 1].getFullYear(),
+      dates[i - 1].getMonth(),
+      dates[i - 1].getDate()
+    );
+    const currDate = new Date(
+      dates[i].getFullYear(),
+      dates[i].getMonth(),
+      dates[i].getDate()
+    );
 
-    if (diff === 24 * 3600 * 1000) {
-      dp[i] = dp[i - 1] + 1;
+    if (currDate.getTime() - prevDate.getTime() === 1000 * 60 * 60 * 24) {
+      currentForward++;
     } else {
-      dp[i] = 1;
-    }
-
-    if (dp[i] > maxCount) {
-      maxCount = dp[i];
+      maxForward = Math.max(maxForward, currentForward);
+      currentForward = 1;
     }
   }
 
+  maxForward = Math.max(maxForward, currentForward);
+  let max = 0;
+  let current = 1;
+  for (let i = dates.length - 1; i > 0; i--) {
+    const prevDate = new Date(
+      dates[i - 1].getFullYear(),
+      dates[i - 1].getMonth(),
+      dates[i - 1].getDate()
+    );
+    const currDate = new Date(
+      dates[i].getFullYear(),
+      dates[i].getMonth(),
+      dates[i].getDate()
+    );
+
+    if (currDate.getTime() - prevDate.getTime() === 1000 * 60 * 60 * 24) {
+      current++;
+    } else {
+      break;
+    }
+  }
   return {
-    maxCount,
-    countFromLast: dp[dp.length - 1],
+    maxCount: maxForward,
+    countFromLast: current,
   };
 }
 
